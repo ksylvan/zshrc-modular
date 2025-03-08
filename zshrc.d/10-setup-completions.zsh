@@ -35,7 +35,7 @@ _custom_fpath=("$HOME/.zsh/completion" "${_custom_fpath[@]}")
 # Add compinit directory if valid
 if [[ -n "$_compinit_dir" && -d "$_compinit_dir" ]]; then
     _custom_fpath=("${_compinit_dir}" "${_custom_fpath[@]}")
-    echo "Added to fpath: compinit dir ${_compinit_dir}"
+    [[ "${_verbose_loading}" -eq 1 ]] && echo "Added to fpath: compinit dir ${_compinit_dir}"
 fi
 
 # Update fpath

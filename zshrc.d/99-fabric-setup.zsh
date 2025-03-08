@@ -31,9 +31,9 @@ function remote_host_os() {
     fi
 }
 
-function __is_windows_host() {
+function _is_windows_host() {
     if [ $# -ne 1 ]; then
-        echo "Usage: __is_windows_host hostname"
+        echo "Usage: _is_windows_host hostname"
         return
     fi
     local os=$(remote_host_os $1)
@@ -43,15 +43,15 @@ function __is_windows_host() {
     echo $ret
 }
 
-function __fabric_patterns_setup() {
+function _fabric_patterns_setup() {
     if [ $# -ne 1 ]; then
-        echo "Usage: __fabric_patterns_setup hostname"
+        echo "Usage: _fabric_patterns_setup hostname"
         echo "Uses expect script and ssh to run remote commands."
         return 1
     fi
 
     local host="$1"
-    local is_win="$(__is_windows_host $host)"
+    local is_win="$(_is_windows_host $host)"
 
     local shell_prompt='\\$ '
     local fabric_cmd='~/go/bin/fabric'
@@ -85,14 +85,14 @@ EOF
     echo "Completed updating $host fabric patterns"
 }
 
-function __run_go_on_host() {
+function _run_go_on_host() {
     if [ $# -lt 3 ]; then
-        echo "Usage: ____run_go_on_host hostname directory sub-command [args...]"
+        echo "Usage: __run_go_on_host hostname directory sub-command [args...]"
         return
     fi
 
     local host="$1"
-    local is_win="$(__is_windows_host $host)"
+    local is_win="$(_is_windows_host $host)"
     local remote_dir="$2"
     shift 2
 
@@ -109,30 +109,30 @@ function __run_go_on_host() {
     fi
 }
 
-function __fabric_purge_binaries() {
+function _fabric_purge_binaries() {
     if [ $# -ne 1 ]; then
-        echo "Usage: __fabric_purge_binaries hostname"
+        echo "Usage: _fabric_purge_binaries hostname"
         return
     fi
 
     local host="$1"
-    local is_win="$(__is_windows_host $host)"
+    local is_win="$(_is_windows_host $host)"
 
     if [ "$is_win" = "true" ]; then
-        __run_go_on_host "$host" 'src\\fabric' clean -i -r -cache
+        _run_go_on_host "$host" 'src\\fabric' clean -i -r -cache
     else
-        __run_go_on_host "$host" 'src/fabric' clean -i -r -cache
+        _run_go_on_host "$host" 'src/fabric' clean -i -r -cache
     fi
 }
 
-function __fabric_git_pull() {
+function _fabric_git_pull() {
     if [ $# -ne 1 ]; then
-        echo "Usage: __fabric_git_pull hostname"
+        echo "Usage: _fabric_git_pull hostname"
         return
     fi
 
     local host="$1"
-    local is_win="$(__is_windows_host $host)"
+    local is_win="$(_is_windows_host $host)"
 
     if [ "$is_win" = "true" ]; then
         ssh "$host" 'cd src\\fabric && git checkout main && git pull'
@@ -141,30 +141,30 @@ function __fabric_git_pull() {
     fi
 }
 
-function __fabric_recompile() {
+function _fabric_recompile() {
     if [ $# -ne 1 ]; then
-        echo "Usage: __fabric_recompile hostname"
+        echo "Usage: _fabric_recompile hostname"
         return
     fi
 
     local host="$1"
-    local is_win="$(__is_windows_host $host)"
+    local is_win="$(_is_windows_host $host)"
 
     if [ "$is_win" = "true" ]; then
-        __run_go_on_host "$host" 'src\\fabric' install .
+        _run_go_on_host "$host" 'src\\fabric' install .
     else
-        __run_go_on_host "$host" 'src/fabric' install .
+        _run_go_on_host "$host" 'src/fabric' install .
     fi
 }
 
-function __fabric_version() {
+function _fabric_version() {
     if [ $# -ne 1 ]; then
-        echo "Usage: __fabric_version hostname"
+        echo "Usage: _fabric_version hostname"
         return
     fi
 
     local host="$1"
-    local is_win="$(__is_windows_host $host)"
+    local is_win="$(_is_windows_host $host)"
 
     if [ "$is_win" = "true" ]; then
         ssh -T "$host" '.\go\bin\fabric --version' </dev/null
@@ -173,29 +173,29 @@ function __fabric_version() {
     fi
 }
 
-function __fabric_custom() {
+function _fabric_custom() {
     if [ $# -ne 1 ]; then
-        echo "Usage: __fabric_custom hostname"
+        echo "Usage: _fabric_custom hostname"
         return
     fi
 
     local host="$1"
-    local is_win="$(__is_windows_host $host)"
+    local is_win="$(_is_windows_host $host)"
 
     if [ "$is_win" = "true" ]; then
-        ssh "$host" 'cd src\custom-fabric && pwsh -nop .\update-fabric.ps1'
+        ssh "$host" 'cd src\custom-fabric && git pull && pwsh -nop .\update-fabric.ps1'
     else
-        ssh "$host" 'cd src/custom-fabric && ./update-fabric.sh'
+        ssh "$host" 'cd src/custom-fabric && git pull && ./update-fabric.sh'
     fi
 }
 
 function fabric_deploy() {
     for host in "$@"; do
         echo "Installing latest fabric on $host"
-        ver_before="$(__fabric_version $host)"
-        __fabric_git_pull $host
-        __fabric_recompile $host
-        ver_after="$(__fabric_version $host)"
+        ver_before="$(_fabric_version $host)"
+        _fabric_git_pull $host
+        _fabric_recompile $host
+        ver_after="$(_fabric_version $host)"
 
         if [ "$ver_before" = "$ver_after" ]; then
             echo "No update needed. Fabric version: $ver_before"
@@ -203,8 +203,8 @@ function fabric_deploy() {
             echo "Updated from ${ver_before} to ${ver_after}"
         fi
 
-        __fabric_patterns_setup $host
-        __fabric_custom $host
+        _fabric_patterns_setup $host
+        _fabric_custom $host
         echo "Done updating fabric on $host"
         echo ""
 

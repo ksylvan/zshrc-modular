@@ -1,19 +1,33 @@
 #!/bin/zsh
 
+_verbose_loading=${ZSHRC_VERBOSE:-0}
+
 # Load all configuration snippets from ~/.zshrc.d
 _zshrc_dir="${HOME}/.zshrc.d"
 if [[ -d "${_zshrc_dir}" ]]; then
+  # *(.N) glob pattern: match only regular files (.), and don't error if no matches (N)
   for _zshrc_file in "${_zshrc_dir}"/*(.N); do
-    if [[ -r "${_zshrc_file}" && -f "${_zshrc_file}" ]]; then
-      source "${_zshrc_file}"
+    if [[ -r "${_zshrc_file}" ]]; then
+      [[ $_verbose_loading -eq 1 ]] && echo "Loading ${_zshrc_file}"
+      source "${_zshrc_file}" ||
+        echo "Error: Failed to source ${_zshrc_file}" >&2
     fi
   done
 fi
-unset _zshrc_dir _zshrc_file
 
 # Added by LM Studio CLI (lms)
-if [[ -d "${HOME}/.lmstudio/bin" && ! $PATH =~ ${HOME}/.lmstudio/bin ]]; then
-  export PATH="$PATH:${HOME}/.lmstudio/bin"
+_lmstudio_bin="${HOME}/.lmstudio/bin"
+if [[ -d "${_lmstudio_bin}" && ! "$PATH" =~ "${_lmstudio_bin}" ]]; then
+  [[ $_verbose_loading -eq 1 ]] && echo "Adding ${_lmstudio_bin} to PATH"
+  path+=("${_lmstudio_bin}")
 fi
 
-[[ -r "${HOME}/.iterm2_shell_integration.zsh" ]] && source "${HOME}/.iterm2_shell_integration.zsh"
+if [[ -r "${HOME}/.iterm2_shell_integration.zsh" ]]; then
+  [[ $_verbose_loading -eq 1 ]] && echo "Loading iTerm2 shell integration"
+  if ! source "${HOME}/.iterm2_shell_integration.zsh"; then
+    echo "Error: Failed to load iTerm2 shell integration" >&2
+  fi
+fi
+
+# Clean up temporary variables
+unset _lmstudio_bin _verbose_loading _zshrc_dir _zshrc_file

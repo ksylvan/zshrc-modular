@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Change to the directory where the script is located
+cd "$(dirname "$0")" || {
+    echo "Cannot change directory."
+    exit 1
+}
+
+# Ensure backups directory exists
+mkdir -p backups
+
+# Create a backup tar.gz file named with the current epoch time
+epoch=$(date +%s)
+backup_file="backups/${epoch}.tar.gz"
+tar -czf "$backup_file" ~/.zshrc ~/.zprofile ~/.zshrc.d 2>/dev/null
+
+# Confirm that the backup was created
+if [ ! -f "$backup_file" ]; then
+    echo "Backup creation failed. Exiting."
+    exit 1
+fi
+echo "Backup created at $backup_file"
+
+# Erase all files in ~/.zshrc.d (create directory if it doesn't exist)
+[ -d ~/.zshrc.d ] || mkdir -p ~/.zshrc.d
+rm -rf ~/.zshrc.d/*
+
+# Copy files from ./zshrc.d/ to ~/.zshrc.d/
+cp zshrc.d/* ~/.zshrc.d/
+
+# Copy ./zprofile to ~/.zprofile
+cp zprofile ~/.zprofile
+
+# Copy ./zshrc to ~/.zshrc
+cp zshrc ~/.zshrc
+
+echo "Installation complete."

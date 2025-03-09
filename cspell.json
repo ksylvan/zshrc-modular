@@ -14,5 +14,15 @@
     "shellenv",
     "tailscale",
     "tailscaled"
+  ],
+  "overrides": [
+    {
+      "filename": "zshrc.d/20-colorful-git-prompt.zsh",
+      "ignoreWords": ["MADRC"]
+    },
+    {
+      "filename": "cspell.json",
+      "ignoreWords": ["MADRC"]
+    },
   ]
 }

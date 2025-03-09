@@ -48,4 +48,4 @@ if autoload -Uz compinit bashcompinit; then
 else
     echo "Error: autoload of compinit and bashcompinit failed."
 fi
-unset _compinit_dir _compinit_file _compinit_files _custom_fpath
+unset _compinit_dir _compinit_file _compinit_files _custom_fpath _verbose_loading

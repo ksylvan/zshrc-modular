@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 # Miscellaneous aliases
 
 # Restart tailscale after a brew update

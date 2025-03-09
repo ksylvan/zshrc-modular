@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # Set up a cache directory for Trivy scans
 TRIVY_CACHE=~/.trivy_cache
 

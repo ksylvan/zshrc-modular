@@ -41,8 +41,6 @@ fi
 # Update fpath
 fpath=("${_custom_fpath[@]}")
 
-unset _compinit_dir _compinit_file _compinit_files _custom_fpath
-
 # Enable zsh and Bash completion systems
 if autoload -Uz compinit bashcompinit; then
     compinit
@@ -50,3 +48,4 @@ if autoload -Uz compinit bashcompinit; then
 else
     echo "Error: autoload of compinit and bashcompinit failed."
 fi
+unset _compinit_dir _compinit_file _compinit_files _custom_fpath

@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+. "${HOME}/.zshrc.d/00-verbose.zsh"
+
 _verbose_loading=${ZSHRC_VERBOSE:-0}
 _brew_found=0
 

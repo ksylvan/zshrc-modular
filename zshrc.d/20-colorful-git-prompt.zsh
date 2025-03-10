@@ -35,7 +35,7 @@ parse_git_branch() {
 # Define color escape sequences for prompt sections.
 autoload -U colors && colors
 COLOR_DEF="%{$reset_color%}"
-COLOR_USR="%{$fg[grey]%}" # Grey color for user@host
+COLOR_USR="%{$fg[green]%}" # Green color for user@host
 COLOR_DIR="%{$fg[red]%}"  # Red for current directory
 COLOR_GIT="%{$fg[blue]%}" # Blue for git branch
 

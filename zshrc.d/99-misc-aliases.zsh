@@ -15,7 +15,10 @@ alias fabric_hosts_update='fabric_update; fabric_deploy localhost thor.local sha
 function zshrc_hosts_update() {
     local hosts=(localhost thor.local shiva.local zen.local)
     for _zsh_u_host in $hosts; do
+        echo "Updating zsh startup files for $_zsh_u_host"
         ssh $_zsh_u_host "cd src/zshrc-modular && git pull && ./install"
+        echo "Done"
+        echo ""
     done
     unset _zsh_u_host
 }

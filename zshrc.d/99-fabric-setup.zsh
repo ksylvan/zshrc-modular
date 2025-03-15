@@ -97,7 +97,7 @@ send "\r"
 send "exit\r"
 expect eof
 EOF
-    echo "Completed updating $host fabric patterns"
+    echo "Completed updating $host fabric patterns abd strategies"
 }
 
 function _run_go_on_host() {

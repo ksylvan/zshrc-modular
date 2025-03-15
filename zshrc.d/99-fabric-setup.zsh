@@ -44,7 +44,7 @@ function _is_windows_host() {
 }
 
 function _fabric_setup() {
-    if [[ $# -le 1 || $# -gt 2 ]]; then
+    if [[ $# -lt 1 || $# -gt 2 ]]; then
         echo "Usage: _fabric_setup hostname [strategies_git_url]"
         echo "Uses expect script and ssh to run remote commands."
         return 1

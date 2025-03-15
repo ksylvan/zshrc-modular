@@ -10,6 +10,7 @@
     "ksylvan",
     "lmstudio",
     "nullglob",
+    "pssh",
     "pwsh",
     "shellenv",
     "tailscale",
@@ -18,11 +19,15 @@
   "overrides": [
     {
       "filename": "zshrc.d/20-colorful-git-prompt.zsh",
-      "ignoreWords": ["MADRC"]
+      "ignoreWords": [
+        "MADRC"
+      ]
     },
     {
       "filename": "cspell.json",
-      "ignoreWords": ["MADRC"]
-    },
+      "ignoreWords": [
+        "MADRC"
+      ]
+    }
   ]
 }

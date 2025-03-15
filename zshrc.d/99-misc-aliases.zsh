@@ -11,7 +11,6 @@ alias fabric_pr_count='python3 ~/src/backend-tools/count_merged_prs.py --usernam
 # libreoffice
 alias libreoffice='open -a libreoffice'
 
-alias fabric_hosts_update='fabric_update; fabric_deploy localhost thor.local shakti.local shiva.local zen.local'
 function zshrc_hosts_update() {
     local hosts=(localhost thor.local shiva.local zen.local)
     for _zsh_u_host in $hosts; do
@@ -22,3 +21,6 @@ function zshrc_hosts_update() {
     done
     unset _zsh_u_host
 }
+
+alias zshrc_hosts_update='pssh -H "localhost thor.local shiva.local zen.local" -t 0 -i "cd src/zshrc-modular && git pull && ./install"'
+alias brew_hosts_update='pssh -H "localhost shiva.local zen.local" -t 0 -i "source .zprofile && brew update && brew upgrade"'

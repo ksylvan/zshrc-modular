@@ -43,15 +43,20 @@ function _is_windows_host() {
     echo $ret
 }
 
-function _fabric_patterns_setup() {
-    if [ $# -ne 1 ]; then
-        echo "Usage: _fabric_patterns_setup hostname"
+function _fabric_setup() {
+    if [[ $# -le 1 || $# -gt 2 ]]; then
+        echo "Usage: _fabric_setup hostname [strategies_git_url]"
         echo "Uses expect script and ssh to run remote commands."
         return 1
     fi
 
     local host="$1"
     local is_win="$(_is_windows_host $host)"
+
+    strategies_git="https://github.com/danielmiessler/fabric.git"
+    if [ $# -eq 2 ]; then
+        strategies_git="$2"
+    fi
 
     local shell_prompt='\\$ '
     local fabric_cmd='~/go/bin/fabric'
@@ -64,7 +69,11 @@ function _fabric_patterns_setup() {
     patterns_line=$(ssh "$host" "echo '' | ${fabric_cmd} -S" | grep Patterns)
     pattern_number=$(echo "$patterns_line" | sed -n 's/^[[:space:]]*\[\([0-9]\{1,\}\)\].*/\1/p')
 
-    echo "Running fabric -S on $host to update patterns"
+    # Grab the strategies menu number
+    strategies_line=$(ssh "$host" "echo '' | ${fabric_cmd} -S" | grep Strategies)
+    strategies_number=$(echo "$strategies_line" | sed -n 's/^[[:space:]]*\[\([0-9]\{1,\}\)\].*/\1/p')
+
+    echo "Running fabric -S on $host to update patterns and strategies"
     expect <<EOF
 log_user 0
 set timeout -1
@@ -75,6 +84,12 @@ expect ":"
 send "$pattern_number\r"
 expect ":"
 send "\r"
+expect ":"
+send "\r"
+expect "(leave empty to skip):"
+send "$strategies_number\r"
+expect ":"
+send "https://github.com/ksylvan/fabric.git\r"
 expect ":"
 send "\r"
 expect "(leave empty to skip):"
@@ -190,12 +205,27 @@ function _fabric_custom() {
 }
 
 function fabric_deploy() {
+    if [[ $# -lt 1 ]]; then
+        echo "Usage: fabric_deploy [-url strategies_git_url] hostname [hostname...]"
+        return
+    fi
+
+    local strategies_git=""
+    if [[ "$1" = "-url" ]]; then
+        if [[ $# -lt 3 ]]; then
+            echo "Usage: fabric_deploy [-url strategies_git_url] hostname [hostname...]"
+            return
+        fi
+        strategies_git="$2"
+        shift 2
+    fi
+
     for host in "$@"; do
         echo "Installing latest fabric on $host"
-        ver_before="$(_fabric_version $host)"
+        local ver_before="$(_fabric_version $host)"
         _fabric_git_pull $host
         _fabric_recompile $host
-        ver_after="$(_fabric_version $host)"
+        local ver_after="$(_fabric_version $host)"
 
         if [ "$ver_before" = "$ver_after" ]; then
             echo "No update needed. Fabric version: $ver_before"
@@ -203,10 +233,14 @@ function fabric_deploy() {
             echo "Updated from ${ver_before} to ${ver_after}"
         fi
 
-        _fabric_patterns_setup $host
+        _fabric_setup $host $strategies_git
         _fabric_custom $host
         echo "Done updating fabric on $host"
         echo ""
 
     done
 }
+
+alias fabric_hosts_update='fabric_update; fabric_deploy \
+    -url https://github.com/ksylvan/fabric.git \
+    localhost thor.local shakti.local shiva.local zen.local'

@@ -22,5 +22,7 @@ function zshrc_hosts_update() {
     unset _zsh_u_host
 }
 
+alias win_update='ssh shakti.local "scoop update && scoop status"'
+alias mac_appstore_update='pssh -H "localhost shiva.local zen.local" -t 0 -i "source .zprofile; mas upgrade"'
 alias zshrc_hosts_update='pssh -H "localhost thor.local shiva.local zen.local" -t 0 -i "cd src/zshrc-modular && git pull && ./install"'
 alias brew_hosts_update='pssh -H "localhost shiva.local zen.local" -t 0 -i "source .zprofile && brew update && brew upgrade"'

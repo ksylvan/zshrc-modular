@@ -30,4 +30,4 @@ alias brew_hosts_update='pssh -H "localhost shiva.local zen.local" -t 0 -i "echo
 alias mac_appstore_update='pssh -H "localhost shiva.local" -t 0 -i "echo App Store update; source .zprofile; mas upgrade"'
 alias mac_update='brew_hosts_update && mac_appstore_update'
 
-alias linux_update='ssh thor.local "sudo apt update && sudo apt -y upgrade && snap upgrade && snap refresh"'
+alias linux_update='ssh thor.local "sudo apt update && sudo apt -y upgrade && sudo snap refresh"'

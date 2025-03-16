@@ -24,7 +24,7 @@ function zshrc_hosts_update() {
 
 alias zshrc_hosts_update='pssh -H "localhost thor.local shiva.local zen.local" -t 0 -i "echo Zshrc update; cd src/zshrc-modular && git pull && ./install"'
 
-alias win_update='ssh shakti.local -t 0 -i "scoop update && scoop status"'
+alias win_update='ssh shakti.local "scoop update && scoop status"'
 
 alias brew_hosts_update='pssh -H "localhost shiva.local zen.local" -t 0 -i "echo updating brew; source .zprofile && brew update && brew upgrade"'
 alias mac_appstore_update='pssh -H "localhost shiva.local" -t 0 -i "echo App Store update; source .zprofile; mas upgrade"'

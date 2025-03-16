@@ -205,42 +205,35 @@ function _fabric_custom() {
 }
 
 function fabric_deploy() {
-    if [[ $# -lt 1 ]]; then
-        echo "Usage: fabric_deploy [-url strategies_git_url] hostname [hostname...]"
+    if [[ $# -eq 0 ]]; then
+        echo "Usage: fabric_deploy [-url strategies_git_url] hostname"
         return
     fi
 
     local strategies_git=""
     if [[ "$1" = "-url" ]]; then
         if [[ $# -lt 3 ]]; then
-            echo "Usage: fabric_deploy [-url strategies_git_url] hostname [hostname...]"
+            echo "Usage: fabric_deploy [-url strategies_git_url] hostname"
             return
         fi
         strategies_git="$2"
         shift 2
     fi
+    local host="$1"
+    echo "Installing latest fabric on $host"
+    local ver_before="$(_fabric_version $host)"
+    _fabric_git_pull $host
+    _fabric_recompile $host
+    local ver_after="$(_fabric_version $host)"
 
-    for host in "$@"; do
-        echo "Installing latest fabric on $host"
-        local ver_before="$(_fabric_version $host)"
-        _fabric_git_pull $host
-        _fabric_recompile $host
-        local ver_after="$(_fabric_version $host)"
+    if [ "$ver_before" = "$ver_after" ]; then
+        echo "No update needed. Fabric version: $ver_before"
+    else
+        echo "Updated from ${ver_before} to ${ver_after}"
+    fi
 
-        if [ "$ver_before" = "$ver_after" ]; then
-            echo "No update needed. Fabric version: $ver_before"
-        else
-            echo "Updated from ${ver_before} to ${ver_after}"
-        fi
-
-        _fabric_setup $host $strategies_git
-        _fabric_custom $host
-        echo "Done updating fabric on $host"
-        echo ""
-
-    done
+    _fabric_setup $host $strategies_git
+    _fabric_custom $host
+    echo "Done updating fabric on $host"
+    echo ""
 }
-
-alias fabric_hosts_update='fabric_update; fabric_deploy \
-    -url https://github.com/ksylvan/fabric.git \
-    localhost thor.local shakti.local shiva.local zen.local'

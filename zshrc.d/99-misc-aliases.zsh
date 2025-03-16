@@ -14,6 +14,7 @@ alias libreoffice='open -a libreoffice'
 function hosts_update() {
     usage_message="Usage: hosts_update <cmd>"
     usage_message+="\n  cmd: fabric, win, brew, appstore, linux, zshrc"
+    usage_message+="\n  cmd: all (to run all commands)"
     if [[ $# -eq 0 ]]; then
         echo -e $usage_message
         return 1
@@ -29,6 +30,12 @@ function hosts_update() {
     local fabric_hosts=(dharma.local thor.local shakti.local shiva.local zen.local)
 
     case "$cmd" in
+    all)
+        for _cmd in fabric win brew appstore linux zshrc; do
+            hosts_update $_cmd
+        done
+        unset _cmd
+        ;;
     fabric)
         local _strategies_git="https://github.com/danielmiessler/fabric.git"
         echo "Github sync our fork of fabric first"

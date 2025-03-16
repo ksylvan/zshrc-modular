@@ -167,8 +167,10 @@ function _fabric_recompile() {
 
     if [ "$is_win" = "true" ]; then
         _run_go_on_host "$host" 'src\\fabric' install .
+        _run_go_on_host "$host" 'src\\fabric\\plugins\\tools\\to_pdf' install .
     else
         _run_go_on_host "$host" 'src/fabric' install .
+        _run_go_on_host "$host" 'src/fabric/plugins/tools/to_pdf' install .
     fi
 }
 

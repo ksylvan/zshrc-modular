@@ -30,7 +30,7 @@ function hosts_update() {
 
     case "$cmd" in
     fabric)
-        local _strategies_git="https://github.com/ksylvan/fabric.git"
+        local _strategies_git="https://github.com/danielmiessler/fabric.git"
         echo "Github sync our fork of fabric first"
         fabric_update
         echo ""

@@ -12,9 +12,10 @@ alias fabric_pr_count='python3 ~/src/backend-tools/count_merged_prs.py --usernam
 alias libreoffice='open -a libreoffice'
 
 function hosts_update() {
+    usage_message="Usage: hosts_update <cmd>"
+    usage_message+="\n  cmd: fabric, win, brew, appstore, linux, zshrc"
     if [[ $# -eq 0 ]]; then
-        echo "Usage: hosts_update <cmd>"
-        echo "  cmd: win, brew, appstore, linux, zshrc"
+        echo -e $usage_message
         return 1
     fi
 
@@ -84,6 +85,7 @@ function hosts_update() {
         ;;
     *)
         echo "Unknown command: $cmd"
+        echo -e $usage_message
         return 1
         ;;
     esac

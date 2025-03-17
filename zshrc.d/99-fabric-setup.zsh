@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 FABRIC_BOOTSTRAP="$HOME/.config/fabric/fabric-bootstrap.inc"
 
 if [[ -f "$FABRIC_BOOTSTRAP" ]]; then
@@ -5,9 +7,18 @@ if [[ -f "$FABRIC_BOOTSTRAP" ]]; then
 fi
 
 # fabric update and deploy to all my machines
-alias fabric_update='gh repo sync ksylvan/fabric; pushd ~/src/fabric;\
-  echo "In directory: $(pwd)"; git pull; cd ~/src/custom-fabric;\
-  echo "In directory: $(pwd)"; git pull; popd'
+function fabric_update() {
+    gh repo sync ksylvan/fabric
+    local _pwd=$(pwd)
+    cd ~/src/fabric
+    echo "In directory: $(pwd)"
+    git stash && git pull && git stash pop
+
+    cd ~/src/custom-fabric
+    echo "In directory: $(pwd)"
+    git stash && git pull && git stash pop
+    cd $_pwd
+}
 
 # The following are for multi-os updates of fabric
 function remote_host_os() {
@@ -124,6 +135,22 @@ function _run_go_on_host() {
     fi
 }
 
+function _fabric_purge_patterns() {
+    if [ $# -ne 1 ]; then
+        echo "Usage: _fabric_purge_patterns hostname"
+        return
+    fi
+
+    local host="$1"
+    local is_win="$(_is_windows_host $host)"
+
+    if [ "$is_win" = "true" ]; then
+        ssh "$host" 'cd .config\\fabric && rmdir /s /q patterns'
+    else
+        ssh "$host" 'cd .config/fabric && rm -rf patterns'
+    fi
+}
+
 function _fabric_purge_binaries() {
     if [ $# -ne 1 ]; then
         echo "Usage: _fabric_purge_binaries hostname"
@@ -234,6 +261,7 @@ function fabric_deploy() {
         echo "Updated from ${ver_before} to ${ver_after}"
     fi
 
+    _fabric_purge_patterns $host
     _fabric_setup $host $strategies_git
     _fabric_custom $host
     echo "Done updating fabric on $host"

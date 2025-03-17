@@ -49,7 +49,7 @@ function hosts_update() {
     win)
         for _win_host in $win_hosts; do
             echo "Updating $_win_host"
-            ssh $_win_host "scoop update && scoop status"
+            ssh $_win_host "scoop update && scoop status && scoop update *"
             echo "Done"
             echo ""
         done

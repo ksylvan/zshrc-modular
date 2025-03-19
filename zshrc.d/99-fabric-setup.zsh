@@ -144,6 +144,7 @@ function _fabric_purge_patterns() {
     local host="$1"
     local is_win="$(_is_windows_host $host)"
 
+    echo "Purging patterns on $host"
     if [ "$is_win" = "true" ]; then
         ssh "$host" 'cd .config\\fabric && rmdir /s /q patterns'
     else

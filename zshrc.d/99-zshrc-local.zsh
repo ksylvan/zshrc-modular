@@ -8,3 +8,4 @@ if [[ -f "$HOME/.zshrc.local" ]]; then
 else
     [[ $_verbose_loading -eq 1 ]] && echo "No $HOME/.zshrc.local file found"
 fi
+true

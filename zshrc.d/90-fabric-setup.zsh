@@ -21,39 +21,6 @@ function fabric_update() {
 }
 
 # The following are for multi-os updates of fabric
-function remote_host_os() {
-    if [ $# -ne 1 ]; then
-        echo "Usage: remote_host_os hostname"
-        echo "Uses ssh to run remote commands."
-        return 1
-    fi
-    local uname_output="$(ssh "$1" uname -a 2>&1)"
-    echo "$uname_output" | grep -q 'is not recognized'
-    if [ $? -ne 0 ]; then
-        echo "$uname_output"
-    else
-        local ver_output="$(ssh "$1" ver 2>&1)"
-        echo "$ver_output" | grep -q 'is not recognized'
-        if [ $? -ne 0 ]; then
-            echo "$ver_output" | tail -1
-        else
-            echo "No uname or ver found!"
-        fi
-    fi
-}
-
-function _is_windows_host() {
-    if [ $# -ne 1 ]; then
-        echo "Usage: _is_windows_host hostname"
-        return
-    fi
-    local os=$(remote_host_os $1)
-    local ret=false
-    echo "$os" | grep -i -q windows
-    if [ $? -eq 0 ]; then ret=true; fi
-    echo $ret
-}
-
 function _fabric_setup() {
     if [[ $# -lt 1 || $# -gt 2 ]]; then
         echo "Usage: _fabric_setup hostname [strategies_git_url]"
@@ -113,7 +80,7 @@ EOF
 
 function _run_go_on_host() {
     if [ $# -lt 3 ]; then
-        echo "Usage: __run_go_on_host hostname directory sub-command [args...]"
+        echo "Usage: _run_go_on_host hostname directory sub-command [args...]"
         return
     fi
 
@@ -266,5 +233,19 @@ function fabric_deploy() {
     _fabric_setup $host $strategies_git
     _fabric_custom $host
     echo "Done updating fabric on $host"
+    echo ""
+}
+
+function fabric_deploy_info() {
+    if [[ $# -ne 1 ]]; then
+        echo "Usage: fabric_deploy_info hostname"
+        return
+    fi
+
+    local host="$1"
+    echo "Fabric deploy info for $host"
+    echo "--------------------------------"
+    echo "Fabric version: $(_fabric_version $host)"
+    echo "OS Info: $(os_version $host)"
     echo ""
 }

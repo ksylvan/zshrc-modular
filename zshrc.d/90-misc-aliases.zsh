@@ -11,55 +11,9 @@ alias fabric_pr_count='python3 ~/src/backend-tools/count_merged_prs.py --usernam
 # libreoffice
 alias libreoffice='open -a libreoffice'
 
-function _running_in_wsl() {
-    if [[ -n "$WSL_DISTRO_NAME" ]]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-function _validated_hostname() {
-    local host="$1"
-    if [[ -z "$host" ]]; then
-        echo "Hostname is required. Returns a validated hostname." >&2
-        echo ""
-        return 1
-    fi
-    local hostname_lower=$(hostname | tr '[:upper:]' '[:lower:]')
-    if _running_in_wsl && [[ "${host:l}" =~ ${hostname_lower} || ${host:l} =~ ${hostname_lower}.local ]]; then
-        host=${hostname_lower}
-        if [[ ${host:l} =~ ${hostname_lower} ]]; then
-            echo "Warning: hostname $host is not reachable from WSL. Using the host IP address." >&2
-            host=$(powershell.exe -NoProfile -Command "Get-NetIPAddress -AddressFamily IPv4 |\
-                Where-Object { \$_.InterfaceAlias -match 'Wi-Fi|Ethernet' -and \$_.IPAddress -match '^192\.168\.' } \
-                | Sort-Object InterfaceMetric | Select-Object -First 1 -ExpandProperty IPAddress" | tr -d '\r')
-            echo "$host"
-            return 0
-        fi
-    fi
-
-    # Check if the host is reachable
-    if nslookup "$host" &>/dev/null; then
-        echo "$host"
-        return 0
-    fi
-    # Check if the host is a local hostname and strip the .local suffix
-    if [[ "$host" =~ ^[a-zA-Z0-9._-]+\.local$ ]]; then
-        host="${host%%.*}"
-        if nslookup "$host" &>/dev/null; then
-            echo "$host"
-            return 0
-        fi
-    fi
-    echo ""
-    echo "Error: Could not validate hostname '$host'" >&2
-    return 1
-}
-
 function hosts_update() {
     usage_message="Usage: hosts_update <cmd> [<cmd> <cmd> ...]"
-    usage_message+="\n  cmd: appstore, brew, fabric, linux, win, zshrc"
+    usage_message+="\n  cmd: appstore, brew, fabric, fabric_versions, linux, win, zshrc"
     usage_message+="\n  or use the all pseudo-command (to run all commands)"
     if [[ $# -eq 0 ]]; then
         echo -e $usage_message
@@ -129,6 +83,16 @@ function hosts_update() {
                     continue
                 fi
                 fabric_deploy -url $_strategies_git $_fabric_host
+            done
+            unset _fabric_host
+            ;;
+        fabric_versions)
+            for _fabric_host in $fabric_hosts; do
+                _fabric_host=$(_validated_hostname $_fabric_host)
+                if [[ -z "$_fabric_host" ]]; then
+                    continue
+                fi
+                fabric_deploy_info $_fabric_host
             done
             unset _fabric_host
             ;;

@@ -153,7 +153,7 @@ function hosts_update() {
                 fi
                 echo "Updating Windows packages on $_win_host"
                 ssh $_win_host "scoop update && scoop status && scoop update *"
-                ssh $_win_host "winget upgrade --all"
+                ssh $_win_host "winget upgrade"
                 echo "Done"
                 echo ""
             done

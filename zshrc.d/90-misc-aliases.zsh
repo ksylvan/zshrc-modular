@@ -26,9 +26,9 @@ function _validated_hostname() {
         echo ""
         return 1
     fi
-    if _running_in_wsl && [[ "$host" =~ ^[a-zA-Z0-9._-]+\.local$ ]]; then
-        host="${host%%.*}"
-        local hostname_lower=$(hostname | tr '[:upper:]' '[:lower:]')
+    local hostname_lower=$(hostname | tr '[:upper:]' '[:lower:]')
+    if _running_in_wsl && [[ "${host:l}" =~ $(hostname_lower) || ${host:l} =~ ${hostname_lower}.local ]]; then
+        host=${hostname_lower}
         if [[ ${host:l} =~ ${hostname_lower} ]]; then
             echo "Warning: hostname $host is not reachable from WSL. Using the host IP address." >&2
             host=$(powershell.exe -NoProfile -Command "Get-NetIPAddress -AddressFamily IPv4 |\

@@ -11,11 +11,32 @@ alias fabric_pr_count='python3 ~/src/backend-tools/count_merged_prs.py --usernam
 # libreoffice
 alias libreoffice='open -a libreoffice'
 
+function _running_in_wsl() {
+    if [[ -n "$WSL_DISTRO_NAME" ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 function _validated_hostname() {
     local host="$1"
     if [[ -z "$host" ]]; then
-        echo "Hostname is required. Returns a validated hostname."
+        echo "Hostname is required. Returns a validated hostname." >&2
+        echo ""
         return 1
+    fi
+    if _running_in_wsl && [[ "$host" =~ ^[a-zA-Z0-9._-]+\.local$ ]]; then
+        host="${host%%.*}"
+        local hostname_lower=$(hostname | tr '[:upper:]' '[:lower:]')
+        if [[ ${host:l} =~ ${hostname_lower} ]]; then
+            echo "Warning: hostname $host is not reachable from WSL. Using the host IP address." >&2
+            host=$(powershell.exe -NoProfile -Command "Get-NetIPAddress -AddressFamily IPv4 |\
+                Where-Object { \$_.InterfaceAlias -match 'Wi-Fi|Ethernet' -and \$_.IPAddress -match '^192\.168\.' } \
+                | Sort-Object InterfaceMetric | Select-Object -First 1 -ExpandProperty IPAddress" | tr -d '\r')
+            echo "$host"
+            return 0
+        fi
     fi
 
     # Check if the host is reachable

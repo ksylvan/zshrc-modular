@@ -10,12 +10,14 @@
     "iterm",
     "ksylvan",
     "lmstudio",
+    "nslookup",
     "nullglob",
     "pssh",
     "pwsh",
     "shellenv",
     "tailscale",
-    "tailscaled"
+    "tailscaled",
+    "winget"
   ],
   "overrides": [
     {

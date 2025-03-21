@@ -11,6 +11,31 @@ alias fabric_pr_count='python3 ~/src/backend-tools/count_merged_prs.py --usernam
 # libreoffice
 alias libreoffice='open -a libreoffice'
 
+function _validated_hostname() {
+    local host="$1"
+    if [[ -z "$host" ]]; then
+        echo "Hostname is required. Returns a validated hostname."
+        return 1
+    fi
+
+    # Check if the host is reachable
+    if nslookup "$host" &>/dev/null; then
+        echo "$host"
+        return 0
+    fi
+    # Check if the host is a local hostname and strip the .local suffix
+    if [[ "$host" =~ ^[a-zA-Z0-9._-]+\.local$ ]]; then
+        host="${host%%.*}"
+        if nslookup "$host" &>/dev/null; then
+            echo "$host"
+            return 0
+        fi
+    fi
+    echo ""
+    echo "Error: Could not validate hostname '$host'" >&2
+    return 1
+}
+
 function hosts_update() {
     usage_message="Usage: hosts_update <cmd> [<cmd> <cmd> ...]"
     usage_message+="\n  cmd: appstore, brew, fabric, linux, win, zshrc"
@@ -48,8 +73,12 @@ function hosts_update() {
         case "$cmd" in
         appstore)
             for _mas_host in $mac_appstore_hosts; do
-                echo "Updating App Store on $_mas_host"
-                ssh $_mas_host "source .zprofile && mas upgrade"
+                _mas_host=$(_validated_hostname $_mas_host)
+                if [[ -z "$_host" ]]; then
+                    continue
+                fi
+                echo "Updating App Store on ${_mas_host}"
+                ssh ${_mas_host} "source .zprofile && mas upgrade"
                 echo "Done"
                 echo ""
             done
@@ -57,6 +86,10 @@ function hosts_update() {
             ;;
         brew)
             for _brew_host in $mac_brew_hosts; do
+                _brew_host=$(_validated_hostname $_brew_host)
+                if [[ -z "$_brew_host" ]]; then
+                    continue
+                fi
                 echo "Updating brew on $_brew_host"
                 ssh $_brew_host "source .zprofile && brew update && brew upgrade"
                 echo "Done"
@@ -70,13 +103,21 @@ function hosts_update() {
             fabric_update
             echo ""
             for _fabric_host in $fabric_hosts; do
+                _fabric_host=$(_validated_hostname $_fabric_host)
+                if [[ -z "$_fabric_host" ]]; then
+                    continue
+                fi
                 fabric_deploy -url $_strategies_git $_fabric_host
             done
             unset _fabric_host
             ;;
         linux)
             for _linux_host in $linux_hosts; do
-                echo "Updating $_linux_host"
+                _linux_host=$(_validated_hostname $_linux_host)
+                if [[ -z "$_linux_host" ]]; then
+                    continue
+                fi
+                echo "Updating Linux packages on $_linux_host"
                 ssh $_linux_host "sudo apt update && sudo apt -y upgrade && sudo snap refresh"
                 echo "Done"
                 echo ""
@@ -85,8 +126,13 @@ function hosts_update() {
             ;;
         win)
             for _win_host in $win_hosts; do
-                echo "Updating $_win_host"
+                _win_host=$(_validated_hostname $_win_host)
+                if [[ -z "$_win_host" ]]; then
+                    continue
+                fi
+                echo "Updating Windows packages on $_win_host"
                 ssh $_win_host "scoop update && scoop status && scoop update *"
+                ssh $_win_host "winget upgrade --all"
                 echo "Done"
                 echo ""
             done
@@ -94,6 +140,10 @@ function hosts_update() {
             ;;
         zshrc)
             for _zsh_u_host in $zshrc_hosts; do
+                _zsh_u_host=$(_validated_hostname $_zsh_u_host)
+                if [[ -z "$_zsh_u_host" ]]; then
+                    continue
+                fi
                 echo "Updating zsh startup files for $_zsh_u_host"
                 ssh $_zsh_u_host "cd src/zshrc-modular && git pull && ./install"
                 echo "Done"

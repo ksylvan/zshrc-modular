@@ -198,10 +198,6 @@ function os_version() {
         echo "Usage: os_version hostname"
         return
     fi
-    local host=$(_validated_hostname $1)
-    if [[ -z "$host" ]]; then
-        return 1
-    fi
 
     local os=$(remote_host_os $host)
     if [[ $os =~ "Linux" ]]; then

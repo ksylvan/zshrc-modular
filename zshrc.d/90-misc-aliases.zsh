@@ -49,7 +49,7 @@ function hosts_update() {
         appstore)
             for _mas_host in $mac_appstore_hosts; do
                 _mas_host=$(_validated_hostname $_mas_host)
-                if [[ -z "$_host" ]]; then
+                if [[ -z "$_mas_host" ]]; then
                     continue
                 fi
                 echo "Updating App Store on ${_mas_host}"

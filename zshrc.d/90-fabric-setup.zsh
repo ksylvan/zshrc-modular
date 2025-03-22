@@ -246,6 +246,6 @@ function fabric_deploy_info() {
     echo "Fabric deploy info for $host"
     echo "--------------------------------"
     echo "Fabric version: $(_fabric_version $host)"
-    echo "OS Info: $(os_version $host)"
+    echo "$(os_version $host)"
     echo ""
 }

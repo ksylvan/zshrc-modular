@@ -100,6 +100,38 @@ function _is_windows_host() {
     echo $ret
 }
 
+function _macos_version_to_name() {
+    local version="$1"
+    if [[ -z "$version" ]]; then
+        echo "Usage: macos_version_to_name version"
+        return
+    fi
+    case "$version" in
+    10.0*) echo "Cheetah" ;;
+    10.1*) echo "Puma" ;;
+    10.2*) echo "Jaguar" ;;
+    10.3*) echo "Panther" ;;
+    10.4*) echo "Tiger" ;;
+    10.5*) echo "Leopard" ;;
+    10.6*) echo "Snow Leopard" ;;
+    10.7*) echo "Lion" ;;
+    10.8*) echo "Mountain Lion" ;;
+    10.9*) echo "Mavericks" ;;
+    10.10*) echo "Yosemite" ;;
+    10.11*) echo "El Capitan" ;;
+    10.12*) echo "Sierra" ;;
+    10.13*) echo "High Sierra" ;;
+    10.14*) echo "Mojave" ;;
+    10.15*) echo "Catalina" ;;
+    11*) echo "Big Sur" ;;
+    12*) echo "Monterey" ;;
+    13*) echo "Ventura" ;;
+    14*) echo "Sonoma" ;;
+    15*) echo "Sequoia" ;;
+    *) echo "Unknown macOS version" ;;
+    esac
+}
+
 function _mac_os_version() {
     if [ $# -ne 1 ]; then
         echo "Usage: _mac_os_version hostname"
@@ -109,6 +141,11 @@ function _mac_os_version() {
         local os=$(ssh ${1} "sw_vers" 2>&1)
         if [[ -n "$os" ]]; then
             echo "$os"
+            local version=$(echo "$os" | grep -i "ProductVersion" | awk '{print $2}')
+            local codename=$(_macos_version_to_name "$version")
+            if [[ -n "$codename" ]]; then
+                echo "Codename: $codename"
+            fi
         else
             echo "Unable to determine macOS version."
         fi

@@ -16,6 +16,7 @@
     "pssh",
     "pwsh",
     "shellenv",
+    "Sonoma",
     "tailscale",
     "tailscaled",
     "winget"

@@ -15,8 +15,8 @@ function _validated_hostname() {
         echo ""
         return 1
     fi
-    local hostname_lower=$(hostname | tr '[:upper:]' '[:lower:]')
-    if _running_in_wsl && [[ "${host:l}" =~ ${hostname_lower} || ${host:l} =~ ${hostname_lower}.local ]]; then
+    local local_hostname=$(hostname | tr '[:upper:]' '[:lower:]')
+    if _running_in_wsl && [[ "${host:l}" =~ ${local_hostname} || ${host:l} =~ ${local_hostname}.local ]]; then
         echo "Warning: hostname $host is not reachable from WSL. Using the host IP address." >&2
         host=$(powershell.exe -NoProfile -Command "Get-NetIPAddress -AddressFamily IPv4 |\
                 Where-Object { \$_.InterfaceAlias -match 'Wi-Fi|Ethernet' -and \$_.IPAddress -match '^192\.168\.' } \
@@ -29,14 +29,6 @@ function _validated_hostname() {
     if nslookup "$host" &>/dev/null; then
         echo "$host"
         return 0
-    fi
-    # Check if the host is a local hostname and strip the .local suffix
-    if [[ "$host" =~ ^[a-zA-Z0-9._-]+\.local$ ]]; then
-        host="${host%%.*}"
-        if nslookup "$host" &>/dev/null; then
-            echo "$host"
-            return 0
-        fi
     fi
     echo ""
     echo "Error: Could not validate hostname '$host'" >&2

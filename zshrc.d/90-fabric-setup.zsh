@@ -227,6 +227,7 @@ function fabric_deploy() {
 
     if [ "$ver_before" = "$ver_after" ]; then
         echo "No update needed. Fabric version: $ver_before"
+        return
     else
         echo "Updated from ${ver_before} to ${ver_after}"
     fi

@@ -25,6 +25,14 @@ function _validated_hostname() {
         return 0
     fi
 
+    # If dscacheutil is available, use it to resolve the hostname
+    if command -v dscacheutil &>/dev/null; then
+        local resolved_host=$(dscacheutil -q host -a name "$host" | grep 'ip_address' | awk '{print $2}')
+        if [[ -n "$resolved_host" ]]; then
+            echo "$host"
+            return 0
+        fi
+    fi
     # Check if the host is reachable
     if nslookup "$host" &>/dev/null; then
         echo "$host"

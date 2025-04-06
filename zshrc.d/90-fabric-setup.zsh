@@ -225,10 +225,13 @@ function fabric_deploy() {
     _fabric_recompile $host
     local ver_after="$(_fabric_version $host)"
 
-    if [ "$ver_before" = "$ver_after" ]; then
+    if [[ "$ver_before" = "$ver_after" ]]; then
         echo "No update needed. Fabric version: $ver_before"
-        echo ""
-        return
+        if [[ -z "FABRIC_SETUP_PATTERNS_EVEN_IF_SAME" ]]; then
+            echo "Skipping fabric setup on $host"
+            echo ""
+            return
+        fi
     else
         echo "Updated from ${ver_before} to ${ver_after}"
     fi

@@ -20,12 +20,13 @@ function hosts_update() {
         return 1
     fi
 
-    local win_hosts=(shakti.local) # Add more Windows hosts here
-    local mac_brew_hosts=(dharma.local shiva.local zen.local)
-    local mac_appstore_hosts=(dharma.local shiva.local)
-    local linux_hosts=(thor.local)
-    local zshrc_hosts=(dharma.local thor.local shiva.local zen.local)
-    local fabric_hosts=(dharma.local thor.local shakti.local shiva.local zen.local)
+    local lan_suffix=".lan"
+    local win_hosts=(shakti${lan_suffix}) # Add more Windows hosts here
+    local mac_brew_hosts=(dharma${lan_suffix} shiva${lan_suffix} zen${lan_suffix})
+    local mac_appstore_hosts=(dharma${lan_suffix} shiva${lan_suffix})
+    local linux_hosts=(thor${lan_suffix})
+    local zshrc_hosts=(dharma${lan_suffix} thor${lan_suffix} shiva${lan_suffix} zen${lan_suffix})
+    local fabric_hosts=(dharma${lan_suffix} thor${lan_suffix} shakti${lan_suffix} shiva${lan_suffix} zen${lan_suffix})
 
     local _commands=($@)
     if [[ " ${_commands} " =~ " all " ]]; then

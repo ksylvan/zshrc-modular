@@ -37,16 +37,17 @@ function _validated_hostname() {
         return 0
     fi
 
-    # Finally, if tailscale is installed and if tailscale is running
-    if command -v tailscale &>/dev/null && tailscale status | grep -q "$host"; then
-        host=$(tailscale status | grep "$host" | awk '{print $2}')
-        if [[ -n "$host" ]] && ping -c 1 "$host" &>/dev/null; then
-            echo "$host"
-            return 0
-        fi
-        echo "$host"
+    # Now try with the hostname minus the domain
+    local short_host="${host%%.*}"
+    if ssh -o BatchMode=yes -o ConnectTimeout=5 "$short_host" exit &>/dev/null; then
+        echo "$short_host"
         return 0
     fi
+    if ping -c 1 "$short_host" &>/dev/null; then
+        echo "$short_host"
+        return 0
+    fi
+
     echo ""
     echo "Error: Could not validate hostname '$host'" >&2
     return 1

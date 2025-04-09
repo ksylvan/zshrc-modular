@@ -20,7 +20,7 @@ function hosts_update() {
         return 1
     fi
 
-    local lan_suffix=".lan"
+    local lan_suffix=".local"
     local win_hosts=(shakti${lan_suffix}) # Add more Windows hosts here
     local mac_brew_hosts=(dharma${lan_suffix} shiva${lan_suffix} zen${lan_suffix})
     local mac_appstore_hosts=(dharma${lan_suffix} shiva${lan_suffix})

@@ -37,15 +37,6 @@ function _validated_hostname() {
         return 0
     fi
 
-    # Try changing the suffix to .local
-    if [[ "$host" =~ \.lan$ ]]; then
-        host="${host%.lan}"
-    fi
-    if ping -c 1 "${host}.local" &>/dev/null; then
-        echo "${host}.local"
-        return 0
-    fi
-
     # Finally, if tailscale is installed and if tailscale is running
     if command -v tailscale &>/dev/null && tailscale status | grep -q "$host"; then
         host=$(tailscale status | grep "$host" | awk '{print $2}')

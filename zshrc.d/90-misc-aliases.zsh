@@ -11,6 +11,11 @@ alias fabric_pr_count='python3 ~/src/backend-tools/count_merged_prs.py --usernam
 # libreoffice
 alias libreoffice='open -a libreoffice'
 
+# Replace ls with eza if available
+if whence -p eza &> /dev/null; then
+    alias ls=eza
+fi
+
 function hosts_update() {
     usage_message="Usage: hosts_update <cmd> [<cmd> <cmd> ...]"
     usage_message+="\n  cmd: appstore, brew, fabric, fabric_versions, linux, win, zshrc"

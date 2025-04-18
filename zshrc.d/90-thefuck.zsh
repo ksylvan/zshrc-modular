@@ -1,7 +1,5 @@
 #!/bin/zsh
 
-eval $(thefuck --alias)
-
 _verbose_loading=${ZSHRC_VERBOSE:-0}
 
 if whence -p thefuck &>/dev/null; then

@@ -72,7 +72,7 @@ function hosts_update() {
                     continue
                 fi
                 echo "Updating brew on $_brew_host"
-                ssh $_brew_host "source .zprofile && brew cleanup && brew update && brew upgrade"
+                ssh $_brew_host "source .zprofile && brew update && brew upgrade && brew doctor && brew cleanup"
                 echo "Done"
                 echo ""
             done

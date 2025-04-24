@@ -11,22 +11,21 @@ function fabric_update() {
     gh repo sync ksylvan/fabric
     local _pwd=$(pwd)
     cd ~/src/fabric
-    echo "In directory: $(pwd)"
     # Check if the current directory is a git repository and if it's dirty
-    local _git_error=""
+    local _git_cmd_output=""
     if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-        _git_error="$(git status --porcelain)"
-        if [[ -n "${_git_error}" ]]; then
-            _git_error="ERROR: Local fabric repository is dirty\n${_git_error}"
+        _git_cmd_output="$(git status --porcelain)"
+        if [[ -n "${_git_cmd_output}" ]]; then
+            _git_cmd_output="ERROR: Local fabric repository is dirty\n${_git_cmd_output}"
         else
             # Fabric repository is clean.
-            git pull
+            _git_cmd_output="$(git pull)"
         fi
     else
-        _git_error="ERROR: $(pwd) is not a git repository"
+        _git_cmd_output="ERROR: $(pwd) is not a git repository"
     fi
     cd $_pwd
-    echo "${_git_error}"
+    echo "${_git_cmd_output}"
 }
 
 # The following are for multi-os updates of fabric

@@ -80,11 +80,16 @@ function hosts_update() {
             ;;
         fabric)
             local _strategies_git="https://github.com/danielmiessler/fabric.git"
+
             echo "Running fabric to sync fork of fabric repo:"
             local _fabric_repo_check="$(fabric_update)"
-            if [[ -n "${_fabric_repo_check}" ]]; then
-                echo "${_fabric_repo_check}"
-            else
+            local _fabric_error=false
+            if [[ "${_fabric_repo_check}" == *ERROR* ]]; then
+                _fabric_error=true
+            fi
+            echo "${_fabric_repo_check}"
+
+            if [[ ${_fabric_error} = 'false' ]]; then
                 echo ""
                 for _fabric_host in $fabric_hosts; do
                     _fabric_host=$(_validated_hostname $_fabric_host)

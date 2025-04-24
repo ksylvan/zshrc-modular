@@ -19,7 +19,7 @@ function fabric_update() {
         if [[ -n "${_git_error}" ]]; then
             _git_error="ERROR: Local fabric repository is dirty\n${_git_error}"
         else
-            echo "Fabric repository is clean."
+            # Fabric repository is clean.
             git pull
         fi
     else

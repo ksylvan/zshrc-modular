@@ -12,7 +12,7 @@ alias fabric_pr_count='python3 ~/src/backend-tools/count_merged_prs.py --usernam
 alias libreoffice='open -a libreoffice'
 
 # Replace ls with eza if available
-if whence -p eza &> /dev/null; then
+if whence -p eza &>/dev/null; then
     alias ls=eza
 fi
 
@@ -80,16 +80,20 @@ function hosts_update() {
             ;;
         fabric)
             local _strategies_git="https://github.com/danielmiessler/fabric.git"
-            echo "Github sync our fork of fabric first"
-            fabric_update
-            echo ""
-            for _fabric_host in $fabric_hosts; do
-                _fabric_host=$(_validated_hostname $_fabric_host)
-                if [[ -z "$_fabric_host" ]]; then
-                    continue
-                fi
-                fabric_deploy -url $_strategies_git $_fabric_host
-            done
+            echo "Running fabric to sync fork of fabric repo:"
+            local _fabric_repo_check="$(fabric_update)"
+            if [[ -n "${_fabric_repo_check}" ]]; then
+                echo "${_fabric_repo_check}"
+            else
+                echo ""
+                for _fabric_host in $fabric_hosts; do
+                    _fabric_host=$(_validated_hostname $_fabric_host)
+                    if [[ -z "$_fabric_host" ]]; then
+                        continue
+                    fi
+                    fabric_deploy -url $_strategies_git $_fabric_host
+                done
+            fi
             unset _fabric_host
             ;;
         fabric_versions)

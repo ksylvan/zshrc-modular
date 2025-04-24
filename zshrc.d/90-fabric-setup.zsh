@@ -12,12 +12,21 @@ function fabric_update() {
     local _pwd=$(pwd)
     cd ~/src/fabric
     echo "In directory: $(pwd)"
-    git stash && git pull && git stash pop
-
-    cd ~/src/custom-fabric
-    echo "In directory: $(pwd)"
-    git stash && git pull && git stash pop
+    # Check if the current directory is a git repository and if it's dirty
+    local _git_error=""
+    if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        _git_error="$(git status --porcelain)"
+        if [[ -n "${_git_error}" ]]; then
+            _git_error="ERROR: Local fabric repository is dirty\n${_git_error}"
+        else
+            echo "Fabric repository is clean."
+            git pull
+        fi
+    else
+        _git_error="ERROR: $(pwd) is not a git repository"
+    fi
     cd $_pwd
+    echo "${_git_error}"
 }
 
 # The following are for multi-os updates of fabric

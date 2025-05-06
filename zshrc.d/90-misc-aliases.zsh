@@ -32,6 +32,11 @@ function hosts_update() {
     local linux_hosts=(thor${lan_suffix})
     local zshrc_hosts=(dharma${lan_suffix} thor${lan_suffix} shiva${lan_suffix} zen${lan_suffix})
     local fabric_hosts=(dharma${lan_suffix} thor${lan_suffix} shakti${lan_suffix} shiva${lan_suffix} zen${lan_suffix})
+    if _running_in_wsl; then
+        fabric_hosts+="localhost"
+        linux_hosts+="localhost"
+	zshrc_hosts+="localhost"
+    fi
 
     local _commands=($@)
     if [[ " ${_commands} " =~ " all " ]]; then

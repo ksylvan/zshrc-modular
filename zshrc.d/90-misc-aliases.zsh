@@ -16,6 +16,10 @@ if whence -p eza &>/dev/null; then
     alias ls=eza
 fi
 
+alias emoji_changelog='(echo "Chosse an appropriate emoji for each item in the \
+CHANGES list below and re-output the entire markdown block below:"; echo ""; cat) | \
+fabric -p ai'
+
 function hosts_update() {
     usage_message="Usage: hosts_update <cmd> [<cmd> <cmd> ...]"
     usage_message+="\n  cmd: appstore, brew, fabric, fabric_versions, linux, win, zshrc"

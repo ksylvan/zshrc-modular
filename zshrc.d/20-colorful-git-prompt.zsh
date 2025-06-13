@@ -36,8 +36,8 @@ parse_git_branch() {
 autoload -U colors && colors
 COLOR_DEF="%{$reset_color%}"
 COLOR_USR="%{$fg[green]%}" # Green color for user@host
-COLOR_DIR="%{$fg[red]%}"  # Red for current directory
-COLOR_GIT="%{$fg[blue]%}" # Blue for git branch
+COLOR_DIR="%{$fg[red]%}"   # Red for current directory
+COLOR_GIT="%{$fg[blue]%}"  # Blue for git branch
 
 # Enable substitution in the prompt.
 setopt PROMPT_SUBST
@@ -48,3 +48,10 @@ setopt PROMPT_SUBST
 # - %2~: current directory, shortened to show two trailing components
 # - $(parse_git_branch): insert the current Git branch (if any)
 export PROMPT='${COLOR_USR}%n@%m ${COLOR_DIR}%2~ ${COLOR_GIT}$(parse_git_branch)${COLOR_DEF}$ '
+
+# Define plain color variables for use in scripts or commands
+COLOR_RESET="${reset_color}"
+COLOR_GREEN="$fg[green]"
+COLOR_BLUE="$fg[blue]"
+COLOR_RED="$fg[red]"
+COLOR_YELLOW="$fg[yellow]"

@@ -227,7 +227,7 @@ function fabric_deploy() {
         shift 2
     fi
     local host="$1"
-    echo "Installing latest fabric on $host"
+    echo "${COLOR_GREEN}Installing latest fabric on $host${COLOR_RESET}"
     local ver_before="$(_fabric_version $host)"
     _fabric_git_pull $host
     _fabric_recompile $host

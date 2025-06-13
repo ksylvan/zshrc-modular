@@ -16,7 +16,7 @@ if whence -p eza &>/dev/null; then
     alias ls=eza
 fi
 
-alias emoji_changelog='(echo "Chosse an appropriate emoji for each item in the \
+alias emoji_changelog='(echo "Choose an appropriate emoji for each item in the \
 CHANGES list below and re-output the entire markdown block below:"; echo ""; cat) | \
 fabric -p ai'
 
@@ -39,7 +39,7 @@ function hosts_update() {
     if _running_in_wsl; then
         fabric_hosts+="localhost"
         linux_hosts+="localhost"
-	zshrc_hosts+="localhost"
+        zshrc_hosts+="localhost"
     fi
 
     local _commands=($@)
@@ -67,7 +67,7 @@ function hosts_update() {
                 if [[ -z "$_mas_host" ]]; then
                     continue
                 fi
-                echo "Updating App Store on ${_mas_host}"
+                echo "${COLOR_GREEN}Updating App Store on ${_mas_host}${COLOR_RESET}"
                 ssh ${_mas_host} "source .zprofile && mas upgrade"
                 echo "Done"
                 echo ""
@@ -80,7 +80,7 @@ function hosts_update() {
                 if [[ -z "$_brew_host" ]]; then
                     continue
                 fi
-                echo "Updating brew on $_brew_host"
+                echo "${COLOR_GREEN}Updating brew on $_brew_host${COLOR_RESET}"
                 ssh $_brew_host "source .zprofile && brew update && brew upgrade && brew doctor && brew cleanup"
                 echo "Done"
                 echo ""
@@ -90,7 +90,7 @@ function hosts_update() {
         fabric)
             local _strategies_git="https://github.com/danielmiessler/fabric.git"
 
-            echo "Running fabric to sync fork of fabric repo:"
+            echo "${COLOR_GREEN}Running git to sync fork of fabric repo:${COLOR_RESET}"
             local _fabric_repo_check="$(fabric_update)"
             local _fabric_error=false
             if [[ "${_fabric_repo_check}" == *ERROR* ]]; then
@@ -126,7 +126,7 @@ function hosts_update() {
                 if [[ -z "$_linux_host" ]]; then
                     continue
                 fi
-                echo "Updating Linux packages on $_linux_host"
+                echo "${COLOR_GREEN}Updating Linux packages on $_linux_host${COLOR_RESET}"
                 ssh $_linux_host "sudo apt update && sudo apt -y upgrade && sudo snap refresh"
                 echo "Done"
                 echo ""
@@ -139,7 +139,7 @@ function hosts_update() {
                 if [[ -z "$_win_host" ]]; then
                     continue
                 fi
-                echo "Updating Windows packages on $_win_host"
+                echo "${COLOR_GREEN}Updating Windows packages on $_win_host${COLOR_RESET}"
                 ssh $_win_host "scoop update && scoop status && scoop update *"
                 ssh $_win_host "winget upgrade"
                 echo "Done"
@@ -153,7 +153,7 @@ function hosts_update() {
                 if [[ -z "$_zsh_u_host" ]]; then
                     continue
                 fi
-                echo "Updating zsh startup files for $_zsh_u_host"
+                echo "${COLOR_GREEN}Updating zsh startup files for $_zsh_u_host${COLOR_RESET}"
                 ssh $_zsh_u_host "cd src/zshrc-modular && git pull && ./install"
                 echo "Done"
                 echo ""

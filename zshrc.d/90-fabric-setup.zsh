@@ -52,11 +52,11 @@ function _fabric_setup() {
     fi
 
     # Grab the pattern menu number
-    patterns_line=$(ssh "$host" "echo '' | ${fabric_cmd} -S" | grep Patterns)
+    patterns_line=$(ssh "$host" "echo '' | ${fabric_cmd} -S" | grep 'Patterns - Downloads')
     pattern_number=$(echo "$patterns_line" | sed -n 's/^[[:space:]]*\[\([0-9]\{1,\}\)\].*/\1/p')
 
     # Grab the strategies menu number
-    strategies_line=$(ssh "$host" "echo '' | ${fabric_cmd} -S" | grep Strategies)
+    strategies_line=$(ssh "$host" "echo '' | ${fabric_cmd} -S" | grep 'Strategies - Downloads')
     strategies_number=$(echo "$strategies_line" | sed -n 's/^[[:space:]]*\[\([0-9]\{1,\}\)\].*/\1/p')
 
     echo "Running fabric -S on $host to update patterns and strategies"

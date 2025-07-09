@@ -169,13 +169,13 @@ function _fabric_recompile() {
     local is_win="$(_is_windows_host $host)"
 
     if [ "$is_win" = "true" ]; then
-        _run_go_on_host "$host" 'src\\fabric' install .
-        _run_go_on_host "$host" 'src\\fabric\\plugins\\tools\\to_pdf' install .
-        _run_go_on_host "$host" 'src\\fabric\\plugins\\tools\\code_helper' install .
+        _run_go_on_host "$host" 'src\\fabric\\cmd\\fabric' install .
+        _run_go_on_host "$host" 'src\\fabric\\cmd\\to_pdf' install .
+        _run_go_on_host "$host" 'src\\fabric\\cmd\\code_helper' install .
     else
-        _run_go_on_host "$host" 'src/fabric' install .
-        _run_go_on_host "$host" 'src/fabric/plugins/tools/to_pdf' install .
-        _run_go_on_host "$host" 'src/fabric/plugins/tools/code_helper' install .
+        _run_go_on_host "$host" 'src/fabric/cmd/fabric' install .
+        _run_go_on_host "$host" 'src/fabric/cmd/to_pdf' install .
+        _run_go_on_host "$host" 'src/fabric/cmd/code_helper' install .
     fi
 }
 

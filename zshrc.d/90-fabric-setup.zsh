@@ -172,10 +172,12 @@ function _fabric_recompile() {
         _run_go_on_host "$host" 'src\\fabric\\cmd\\fabric' install .
         _run_go_on_host "$host" 'src\\fabric\\cmd\\to_pdf' install .
         _run_go_on_host "$host" 'src\\fabric\\cmd\\code_helper' install .
+        _run_go_on_host "$host" 'src\\fabric\\cmd\\generate_changelog' install .
     else
         _run_go_on_host "$host" 'src/fabric/cmd/fabric' install .
         _run_go_on_host "$host" 'src/fabric/cmd/to_pdf' install .
         _run_go_on_host "$host" 'src/fabric/cmd/code_helper' install .
+        _run_go_on_host "$host" 'src/fabric/cmd/generate_changelog' install .
     fi
 }
 

@@ -35,7 +35,7 @@ function hosts_update() {
     local mac_appstore_hosts=(dharma${lan_suffix} shiva${lan_suffix})
     local linux_hosts=(thor${lan_suffix})
     local zshrc_hosts=(dharma${lan_suffix} thor${lan_suffix} shiva${lan_suffix} zen${lan_suffix} kayvan-Meanwhile-MBP${lan_suffix})
-    local fabric_hosts=(dharma${lan_suffix} thor${lan_suffix} shakti${lan_suffix} shiva${lan_suffix} zen${lan_suffix})
+    local fabric_hosts=(dharma${lan_suffix} thor${lan_suffix} shakti${lan_suffix} shiva${lan_suffix} zen${lan_suffix} kayvan-Meanwhile-MBP${lan_suffix})
     if _running_in_wsl; then
         fabric_hosts+="localhost"
         linux_hosts+="localhost"

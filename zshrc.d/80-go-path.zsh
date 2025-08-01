@@ -13,3 +13,4 @@ if whence -p go &>/dev/null; then
 else
     [[ ${_verbose_loading} -eq 1 ]] && echo "Go is not installed."
 fi
+true

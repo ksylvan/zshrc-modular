@@ -19,3 +19,4 @@ if whence -p pnpm &>/dev/null; then
 else
     [[ ${_verbose_loading} -eq 1 ]] && echo "pnpm is not installed."
 fi
+true

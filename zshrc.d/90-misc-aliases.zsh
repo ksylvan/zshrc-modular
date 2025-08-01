@@ -31,10 +31,10 @@ function hosts_update() {
 
     local lan_suffix=".local"
     local win_hosts=(shakti${lan_suffix}) # Add more Windows hosts here
-    local mac_brew_hosts=(dharma${lan_suffix} shiva${lan_suffix} zen${lan_suffix})
+    local mac_brew_hosts=(dharma${lan_suffix} shiva${lan_suffix} zen${lan_suffix} kayvan-Meanwhile-MBP${lan_suffix})
     local mac_appstore_hosts=(dharma${lan_suffix} shiva${lan_suffix})
     local linux_hosts=(thor${lan_suffix})
-    local zshrc_hosts=(dharma${lan_suffix} thor${lan_suffix} shiva${lan_suffix} zen${lan_suffix})
+    local zshrc_hosts=(dharma${lan_suffix} thor${lan_suffix} shiva${lan_suffix} zen${lan_suffix} kayvan-Meanwhile-MBP${lan_suffix})
     local fabric_hosts=(dharma${lan_suffix} thor${lan_suffix} shakti${lan_suffix} shiva${lan_suffix} zen${lan_suffix})
     if _running_in_wsl; then
         fabric_hosts+="localhost"

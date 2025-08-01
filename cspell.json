@@ -1,40 +1,23 @@
 {
-  "version": "0.2",
-  "language": "en",
-  "words": [
-    "appstore",
-    "aquasec",
-    "danielmiessler",
-    "DISTRO",
-    "dscacheutil",
-    "fpath",
-    "GOPATH",
-    "iterm",
-    "ksylvan",
-    "lmstudio",
-    "mdns",
-    "nslookup",
-    "nullglob",
-    "pssh",
-    "pwsh",
-    "shellenv",
-    "Sonoma",
-    "tailscale",
-    "tailscaled",
-    "winget"
-  ],
-  "overrides": [
-    {
-      "filename": "zshrc.d/20-colorful-git-prompt.zsh",
-      "ignoreWords": [
+    "words": [
+        "appstore",
+        "aquasec",
+        "danielmiessler",
+        "fpath",
+        "GOPATH",
+        "iterm",
+        "ksylvan",
+        "lmstudio",
+        "nullglob",
+        "plandex",
+        "pwsh",
+        "tailscaled",
+        "thefuck",
+        "Warpify",
+        "Warpifying",
+        "winget"
+    ],
+    "ignoreWords": [
         "MADRC"
-      ]
-    },
-    {
-      "filename": "cspell.json",
-      "ignoreWords": [
-        "MADRC"
-      ]
-    }
-  ]
+    ]
 }

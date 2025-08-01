@@ -7,5 +7,3 @@ if whence -p thefuck &>/dev/null; then
 else
     [[ ${_verbose_loading} -eq 1 ]] && echo "thefuck is not installed."
 fi
-
-unset _verbose_loading

@@ -204,6 +204,7 @@ function _fabric_completions() {
         echo "Ignoring completions on Windows host $host"
         return
     fi
+    echo "Installing fabric completions on $host"
     ssh "$host" 'cd src/fabric && cp completions/_fabric ~/.zsh/completion/'
 }
 
@@ -218,8 +219,10 @@ function _fabric_custom() {
     local is_win="$(_is_windows_host $host)"
 
     if [ "$is_win" = "true" ]; then
+        echo "Running custom fabric update script on Windows host $host"
         ssh "$host" 'cd src\custom-fabric && git pull && pwsh -nop .\update-fabric.ps1'
     else
+        echo "Running custom fabric update script on host $host"
         ssh "$host" 'cd src/custom-fabric && git pull && ./update-fabric.sh'
     fi
 }

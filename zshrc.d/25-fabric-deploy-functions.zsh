@@ -205,7 +205,9 @@ function _fabric_completions() {
         return
     fi
     echo "Installing fabric completions on $host"
-    ssh "$host" 'cd src/fabric && cp completions/_fabric ~/.zsh/completion/'
+    ssh "$host" 'cd src/fabric; mkdir -p ~/.zsh/completions/ && cp completions/_fabric ~/.zsh/completions/'
+    ssh "$host" 'cd ~/.zsh/completions/ && ln -sf _fabric _fabric-ai'
+    echo "Done installing on $host: _fabric and _fabric-ai in ~/.zsh/completions/"
 }
 
 

@@ -191,6 +191,23 @@ function _fabric_version() {
     fi
 }
 
+function _fabric_completions() {
+    if [ $# -ne 1 ]; then
+        echo "Usage: _fabric_completions hostname"
+        return
+    fi
+
+    local host="$1"
+    local is_win="$(_is_windows_host $host)"
+
+    if [ "$is_win" = "true" ]; then
+        echo "Ignoring completions on Windows host $host"
+        return
+    fi
+    ssh "$host" 'cd src/fabric && cp completions/_fabric ~/.zsh/completion/'
+}
+
+
 function _fabric_custom() {
     if [ $# -ne 1 ]; then
         echo "Usage: _fabric_custom hostname"
@@ -243,6 +260,8 @@ function fabric_deploy() {
     _fabric_purge_patterns $host
     _fabric_setup $host $strategies_git
     _fabric_custom $host
+    _fabric_completions $host
+
     echo "Done updating fabric on $host"
     echo ""
 }

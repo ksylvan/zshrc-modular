@@ -25,16 +25,16 @@ else
 fi
 
 # custom completions directory
-mkdir -p "${HOME}/.zsh/completion"
+mkdir -p "${HOME}/.zsh/completions"
 
 # Always add the custom completion directory
-_custom_fpath=("$HOME/.zsh/completion" "${_custom_fpath[@]}")
+_custom_fpath=("$HOME/.zsh/completions" "${_custom_fpath[@]}")
 [[ "${_verbose_loading}" -eq 1 ]] &&
-    echo "Added to fpath: custom completion dir ${HOME}/.zsh/completion"
+    echo "Added to fpath: custom completion dir ${HOME}/.zsh/completions"
 
 # Add compinit directory if valid
 if [[ -n "$_compinit_dir" && -d "$_compinit_dir" ]]; then
-    _custom_fpath=("${_compinit_dir}" "${_custom_fpath[@]}")
+    _custom_fpath=( "${_custom_fpath[@]}" "${_compinit_dir}")
     [[ "${_verbose_loading}" -eq 1 ]] && echo "Added to fpath: compinit dir ${_compinit_dir}"
 fi
 

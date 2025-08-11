@@ -7,3 +7,5 @@ _verbose_loading=${ZSHRC_VERBOSE:-0}
 
 # Auto-Warpify
 [[ "$-" == *i* ]] && printf '\eP$f{"hook": "SourcedRcFileForWarp", "value": { "shell": "zsh"}}\x9c'
+
+true

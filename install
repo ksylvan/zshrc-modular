@@ -26,7 +26,7 @@ echo "Backup created at $backup_file"
 rm -rf ~/.zshrc.d/*
 
 # Copy files from ./zshrc.d/ to ~/.zshrc.d/
-cp zshrc.d/* ~/.zshrc.d/
+cp -r zshrc.d/* ~/.zshrc.d/
 
 # Copy ./zprofile to ~/.zprofile
 cp zprofile ~/.zprofile

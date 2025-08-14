@@ -29,13 +29,20 @@ function hosts_update() {
         return 1
     fi
 
-    local lan_suffix=".local"
-    local win_hosts=(shakti${lan_suffix}) # Add more Windows hosts here
-    local mac_brew_hosts=(dharma${lan_suffix} shiva${lan_suffix} zen${lan_suffix} kayvan-Meanwhile-MBP${lan_suffix})
-    local mac_appstore_hosts=(dharma${lan_suffix} shiva${lan_suffix})
-    local linux_hosts=(thor${lan_suffix})
-    local zshrc_hosts=(dharma${lan_suffix} thor${lan_suffix} shiva${lan_suffix} zen${lan_suffix} kayvan-Meanwhile-MBP${lan_suffix})
-    local fabric_hosts=(dharma${lan_suffix} thor${lan_suffix} shakti${lan_suffix} shiva${lan_suffix} zen${lan_suffix} kayvan-Meanwhile-MBP${lan_suffix})
+    local _zshrc_dir="${HOME}/.zshrc.d"
+    if [[ -r "$_zshrc_dir/data/update_hosts.zsh" ]]; then
+        source "$_zshrc_dir/data/update_hosts.zsh"
+    else
+        echo "Error: Could not source update_hosts.zsh data file."
+        return 1
+    fi
+    local win_hosts=("${_ZHU_WIN_HOSTS[@]}")
+    local mac_brew_hosts=("${_ZHU_MAC_BREW_HOSTS[@]}")
+    local mac_appstore_hosts=("${_ZHU_MAC_APPSTORE_HOSTS[@]}")
+    local linux_hosts=("${_ZHU_LINUX_HOSTS[@]}")
+    local zshrc_hosts=("${_ZHU_ZSHRC_HOSTS[@]}")
+    local fabric_hosts=("${_ZHU_FABRIC_HOSTS[@]}")
+
     if _running_in_wsl; then
         fabric_hosts+="localhost"
         linux_hosts+="localhost"

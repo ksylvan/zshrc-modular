@@ -284,3 +284,20 @@ function fabric_deploy_info() {
     echo "$(os_version $host)"
     echo ""
 }
+
+function fabric_winget_update() {
+    local fabric_version=$(gh api graphql -f query='
+
+    query {
+        repository(owner: "danielmiessler", name: "fabric") {
+        latestRelease {
+            tagName
+        }
+        }
+    }' --jq '.data.repository.latestRelease.tagName')
+    local releases_url="$(gh api repos/danielmiessler/fabric/releases/latest --jq '.html_url')"
+    echo "Dispatching fabric winget release update to $fabric_version using assets at $releases_url"
+    printf '%s' \
+        '{"event_type":"fabric-release","client_payload":{"tag":"'"$fabric_version"'","url":"'"$releases_url"'"}}' \
+|       gh api repos/ksylvan/fabric-winget/dispatches --method POST --input -
+}

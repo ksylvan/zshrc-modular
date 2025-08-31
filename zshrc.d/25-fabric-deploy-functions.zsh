@@ -299,5 +299,5 @@ function fabric_winget_update() {
     echo "Dispatching fabric winget release update to $fabric_version using assets at $releases_url"
     printf '%s' \
         '{"event_type":"fabric-release","client_payload":{"tag":"'"$fabric_version"'","url":"'"$releases_url"'"}}' \
-|       gh api repos/ksylvan/fabric-winget/dispatches --method POST --input -
+|       gh api repos/ksylvan/fabric-packager/dispatches --method POST --input -
 }

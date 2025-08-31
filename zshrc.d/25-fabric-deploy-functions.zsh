@@ -285,19 +285,32 @@ function fabric_deploy_info() {
     echo ""
 }
 
-function fabric_winget_update() {
-    local fabric_version=$(gh api graphql -f query='
+function fabric_packager() {
+    if [[ $# -ne 1 ]]; then
+        echo "Usage: fabric_packager {winget|docker}"
+        return 1
+    fi
 
+    local target="$1"
+    local event_type=""
+    case "$target" in
+        winget) event_type="fabric-winget-release" ;;
+        docker) event_type="fabric-docker-release" ;;
+        *) echo "Usage: fabric_packager {winget|docker}"; return 1 ;;
+    esac
+
+    local fabric_version=$(gh api graphql -f query='
     query {
         repository(owner: "danielmiessler", name: "fabric") {
-        latestRelease {
-            tagName
-        }
+            latestRelease {
+                tagName
+            }
         }
     }' --jq '.data.repository.latestRelease.tagName')
+
     local releases_url="$(gh api repos/danielmiessler/fabric/releases/latest --jq '.html_url')"
-    echo "Dispatching fabric winget release update to $fabric_version using assets at $releases_url"
+    echo "Dispatching fabric ${target} release update to ${fabric_version} using assets at ${releases_url}"
     printf '%s' \
-        '{"event_type":"fabric-winget-release","client_payload":{"tag":"'"$fabric_version"'","url":"'"$releases_url"'"}}' \
-|       gh api repos/ksylvan/fabric-packager/dispatches --method POST --input -
+        '{"event_type":"'"$event_type"'","client_payload":{"tag":"'"$fabric_version"'","url":"'"$releases_url"'"}}' \
+    | gh api repos/ksylvan/fabric-packager/dispatches --method POST --input -
 }

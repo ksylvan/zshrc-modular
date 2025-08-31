@@ -1,0 +1,36 @@
+#compdef hosts_update
+
+# zsh completion for `hosts_update`
+# Place this file in a directory on your $fpath (or source it) and run `compinit`.
+
+_hosts_update() {
+  local curcontext=$curcontext state line
+  typeset -A opt_args
+
+  local -a subcommands
+  subcommands=(
+    'all:Update all host configurations'
+    'appstore:Update App Store related hosts'
+    'brew:Update Homebrew related hosts'
+    'fabric:Update Fabric related hosts'
+    'fabric_versions:Update Fabric version hosts'
+    'linux:Update Linux specific hosts'
+    'win:Update Windows specific hosts'
+    'zshrc:Update zshrc configuration'
+  )
+
+  _arguments -C \
+    '1:subcommand:->subcmds' \
+    '*::args:->args' && return 0
+
+  case $state in
+    subcmds)
+      _describe -t subcommands 'hosts_update subcommand' subcommands && return 0
+      ;;
+  esac
+
+  return 1
+}
+
+_hosts_update "$@"
+

@@ -298,6 +298,6 @@ function fabric_winget_update() {
     local releases_url="$(gh api repos/danielmiessler/fabric/releases/latest --jq '.html_url')"
     echo "Dispatching fabric winget release update to $fabric_version using assets at $releases_url"
     printf '%s' \
-        '{"event_type":"fabric-release","client_payload":{"tag":"'"$fabric_version"'","url":"'"$releases_url"'"}}' \
+        '{"event_type":"fabric-winget-release","client_payload":{"tag":"'"$fabric_version"'","url":"'"$releases_url"'"}}' \
 |       gh api repos/ksylvan/fabric-packager/dispatches --method POST --input -
 }

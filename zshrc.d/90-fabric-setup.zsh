@@ -15,6 +15,7 @@ else
     fi
 fi
 
+FABRIC_ALIAS_PREFIX="f_"
 FABRIC_BOOTSTRAP="$HOME/.config/fabric/fabric-bootstrap.inc"
 
 if [[ -f "$FABRIC_BOOTSTRAP" && $_fabric_available = true ]]; then
@@ -24,3 +25,4 @@ fi
 
 unset _fabric_available
 unset FABRIC_BOOTSTRAP
+unset FABRIC_ALIAS_PREFIX

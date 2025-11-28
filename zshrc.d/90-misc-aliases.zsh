@@ -2,6 +2,9 @@
 
 # Miscellaneous aliases
 
+# Restart MacOS DNS resolver
+alias restart_macos_dns='sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
+
 # My PR count so far this month
 alias fabric_pr_count='python3 ~/src/backend-tools/count_merged_prs.py --username ksylvan --repo danielmiessler/fabric'
 

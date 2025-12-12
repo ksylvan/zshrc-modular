@@ -35,6 +35,7 @@ cp zprofile ~/.zprofile
 cp zshrc ~/.zshrc
 
 # Copy files in completions/
+mkdir -p ~/.zsh/completions
 cp -r completions/* ~/.zsh/completions/
 
 echo "Installation complete."

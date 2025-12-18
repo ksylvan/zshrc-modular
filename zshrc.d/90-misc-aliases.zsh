@@ -137,7 +137,7 @@ function hosts_update() {
                     continue
                 fi
                 echo "${COLOR_GREEN}Updating Linux packages on $_linux_host${COLOR_RESET}"
-                ssh $_linux_host "sudo apt-get update && sudo apt-get -y upgrade && sudo snap refresh"
+                ssh $_linux_host "sudo apt-get update && sudo apt-get -y upgrade && which snap && sudo snap refresh"
                 echo "Done"
                 echo ""
             done

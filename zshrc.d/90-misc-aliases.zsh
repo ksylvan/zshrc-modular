@@ -5,6 +5,9 @@
 # Restart MacOS DNS resolver
 alias restart_macos_dns='sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
 
+# restart tailscale
+alias restart_tailscale='sudo launchctl kickstart -k system/homebrew.mxcl.tailscale'
+
 # My PR count so far this month
 alias fabric_pr_count='python3 ~/src/backend-tools/count_merged_prs.py --username ksylvan --repo danielmiessler/fabric'
 

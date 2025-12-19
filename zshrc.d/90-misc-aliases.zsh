@@ -115,7 +115,7 @@ function hosts_update() {
                     if [[ -z "$_fabric_host" ]]; then
                         continue
                     fi
-                    fabric_deploy -url $_strategies_git $_fabric_host
+                    fabric_deploy $_fabric_host
                 done
             fi
             unset _fabric_host

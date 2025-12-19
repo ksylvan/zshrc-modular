@@ -24,19 +24,13 @@ function fabric_update() {
 
 # The following are for multi-os updates of fabric
 function _fabric_setup() {
-    if [[ $# -lt 1 || $# -gt 2 ]]; then
-        echo "Usage: _fabric_setup hostname [strategies_git_url]"
-        echo "Uses expect script and ssh to run remote commands."
+    if [[ $# -lt 1 ]]; then
+        echo "Usage: _fabric_setup hostname"
         return 1
     fi
 
     local host="$1"
     local is_win="$(_is_windows_host $host)"
-
-    strategies_git="https://github.com/danielmiessler/fabric.git"
-    if [ $# -eq 2 ]; then
-        strategies_git="$2"
-    fi
 
     local shell_prompt='\\$ '
     local fabric_cmd='~/go/bin/fabric'
@@ -45,35 +39,28 @@ function _fabric_setup() {
         fabric_cmd='fabric'
     fi
 
-    # Grab the pattern menu number
-    patterns_line=$(ssh "$host" "echo '' | ${fabric_cmd} -S" | grep 'Patterns - Downloads')
-    pattern_number=$(echo "$patterns_line" | sed -n 's/^[[:space:]]*\[\([0-9]\{1,\}\)\].*/\1/p')
-
-    # Grab the strategies menu number
-    strategies_line=$(ssh "$host" "echo '' | ${fabric_cmd} -S" | grep 'Strategies - Downloads')
-    strategies_number=$(echo "$strategies_line" | sed -n 's/^[[:space:]]*\[\([0-9]\{1,\}\)\].*/\1/p')
-
-    echo "Running fabric -S on $host to update patterns and strategies"
+    # After purging patterns, first-time setup is triggered
+    echo "Running fabric -S on $host (first-time setup flow after pattern purge)"
     expect <<EOF
 log_user 0
 set timeout -1
 spawn ssh $host
 expect "$shell_prompt"
 send "fabric -S\r"
-expect ":"
-send "$pattern_number\r"
-expect ":"
-send "\r"
+# Patterns: Git Repo Url prompt (accept default)
 expect ":"
 send "\r"
-expect "(leave empty to skip):"
-send "$strategies_number\r"
-expect ":"
-send "https://github.com/ksylvan/fabric.git\r"
+# Patterns: Git Repo Patterns Folder prompt (accept default)
 expect ":"
 send "\r"
-expect "(leave empty to skip):"
+# Strategies: Git Repo Url prompt
+expect ":"
 send "\r"
+# Strategies: Git Repo Strategies Folder prompt (accept default)
+expect ":"
+send "\r"
+# Done - wait for shell prompt
+expect "$shell_prompt"
 send "exit\r"
 expect eof
 EOF
@@ -104,20 +91,20 @@ function _run_go_on_host() {
     fi
 }
 
-function _fabric_purge_patterns() {
+function _fabric_purge_patterns_and_strategies() {
     if [ $# -ne 1 ]; then
-        echo "Usage: _fabric_purge_patterns hostname"
+        echo "Usage: _fabric_purge_patterns_and_strategies hostname"
         return
     fi
 
     local host="$1"
     local is_win="$(_is_windows_host $host)"
 
-    echo "Purging patterns on $host"
+    echo "Purging patterns and strategies on $host"
     if [ "$is_win" = "true" ]; then
-        ssh "$host" 'cd .config\\fabric && rmdir /s /q patterns'
+        ssh "$host" 'cd .config\\fabric && rmdir /s /q patterns strategies'
     else
-        ssh "$host" 'cd .config/fabric && rm -rf patterns'
+        ssh "$host" 'cd .config/fabric && rm -rf patterns strategies'
     fi
 }
 
@@ -231,19 +218,10 @@ function _fabric_custom() {
 
 function fabric_deploy() {
     if [[ $# -eq 0 ]]; then
-        echo "Usage: fabric_deploy [-url strategies_git_url] hostname"
+        echo "Usage: fabric_deploy hostname"
         return
     fi
 
-    local strategies_git=""
-    if [[ "$1" = "-url" ]]; then
-        if [[ $# -lt 3 ]]; then
-            echo "Usage: fabric_deploy [-url strategies_git_url] hostname"
-            return
-        fi
-        strategies_git="$2"
-        shift 2
-    fi
     local host="$1"
     echo "${COLOR_GREEN}Installing latest fabric on $host${COLOR_RESET}"
     local ver_before="$(_fabric_version $host)"
@@ -262,8 +240,8 @@ function fabric_deploy() {
         echo "Updated from ${ver_before} to ${ver_after}"
     fi
 
-    _fabric_purge_patterns $host
-    _fabric_setup $host $strategies_git
+    _fabric_purge_patterns_and_strategies $host
+    _fabric_setup $host
     _fabric_custom $host
     _fabric_completions $host
 

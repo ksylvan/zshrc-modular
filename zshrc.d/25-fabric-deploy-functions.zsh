@@ -151,16 +151,31 @@ function _fabric_recompile() {
 
     if [ "$is_win" = "true" ]; then
         _run_go_on_host "$host" 'src\\fabric\\cmd\\fabric' install .
+    else
+        _run_go_on_host "$host" 'src/fabric/cmd/fabric' install .
+    fi
+}
+
+function _fabric_helpers_recompile() {
+    if [ $# -ne 1 ]; then
+        echo "Usage: _fabric_recompile hostname"
+        return
+    fi
+
+    local host="$1"
+    local is_win="$(_is_windows_host $host)"
+
+    if [ "$is_win" = "true" ]; then
         _run_go_on_host "$host" 'src\\fabric\\cmd\\to_pdf' install .
         _run_go_on_host "$host" 'src\\fabric\\cmd\\code_helper' install .
         _run_go_on_host "$host" 'src\\fabric\\cmd\\generate_changelog' install .
     else
-        _run_go_on_host "$host" 'src/fabric/cmd/fabric' install .
         _run_go_on_host "$host" 'src/fabric/cmd/to_pdf' install .
         _run_go_on_host "$host" 'src/fabric/cmd/code_helper' install .
         _run_go_on_host "$host" 'src/fabric/cmd/generate_changelog' install .
     fi
 }
+
 
 function _fabric_version() {
     if [ $# -ne 1 ]; then
@@ -237,6 +252,7 @@ function fabric_deploy() {
             return
         fi
     else
+        _fabric_helpers_recompile $host
         echo "Updated from ${ver_before} to ${ver_after}"
     fi
 

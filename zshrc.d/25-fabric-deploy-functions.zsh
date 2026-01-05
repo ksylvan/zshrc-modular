@@ -167,11 +167,11 @@ function _fabric_helpers_recompile() {
 
     if [ "$is_win" = "true" ]; then
         _run_go_on_host "$host" 'src\\fabric\\cmd\\to_pdf' install .
-        _run_go_on_host "$host" 'src\\fabric\\cmd\\code_helper' install .
+        _run_go_on_host "$host" 'src\\fabric\\cmd\\code2context' install .
         _run_go_on_host "$host" 'src\\fabric\\cmd\\generate_changelog' install .
     else
         _run_go_on_host "$host" 'src/fabric/cmd/to_pdf' install .
-        _run_go_on_host "$host" 'src/fabric/cmd/code_helper' install .
+        _run_go_on_host "$host" 'src/fabric/cmd/code2context' install .
         _run_go_on_host "$host" 'src/fabric/cmd/generate_changelog' install .
     fi
 }

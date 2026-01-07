@@ -2,6 +2,7 @@
     "words": [
         "appstore",
         "aquasec",
+        "autorun",
         "danielmiessler",
         "DISTRO",
         "dscacheutil",
@@ -18,9 +19,12 @@
         "pwsh",
         "tailscaled",
         "thefuck",
+        "toplevel",
         "Warpify",
         "Warpifying",
-        "winget"
+        "winget",
+        "worktree",
+        "worktrees"
     ],
     "ignoreWords": [
         "MADRC"

@@ -9,6 +9,7 @@ make_worktree_here() {
         return 1
     fi
 
+    local magic_configs=(".vercel" ".neon")
     local repo_dir base_branch_name worktree_name
     worktree_name=$1
     base_branch_name=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
@@ -27,6 +28,17 @@ make_worktree_here() {
         echo "Error: Failed to create worktree for branch '$base_branch_name'."
         return 1
     fi
+
+    # symlink all .env* files
+    for env_file in $(ls -A "${repo_dir}" | grep '^\.env'); do
+        # symlink but avoid overwriting existing files and fail silently
+        ln -s "${repo_dir}/${env_file}" "${worktrees_dir}/${worktree_name}/${env_file}" 2>/dev/null || :
+    done
+    for config in $magic_configs; do
+        if [[ -e "${repo_dir}/${config}" ]]; then
+            ln -s "${repo_dir}/${config}" "${worktrees_dir}/${worktree_name}/${config}"
+        fi
+    done
 
     echo "Created new worktree at ${worktrees_dir}/${worktree_name} based on branch '$base_branch_name'."
     git worktree list

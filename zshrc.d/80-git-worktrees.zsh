@@ -20,6 +20,11 @@ make_worktree_here() {
         return 1
     fi
 
+    local git_common_dir=$(git rev-parse --git-common-dir 2>/dev/null)
+    if [[ "$git_common_dir" != ".git" ]]; then
+        repo_dir="${git_common_dir%/.git}"
+    fi
+
     local worktrees_dir="${repo_dir}/../worktrees/$(basename "$repo_dir")"
     mkdir -p "$worktrees_dir"
 

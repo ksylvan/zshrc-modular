@@ -78,3 +78,65 @@ make_autorun_dirs() {
         fi
     done
 }
+
+cleanup_work_tree_here() {
+    if [[ $# -lt 1 || $# -gt 2 ]]; then
+        echo "Usage: cleanup_work_tree_here <worktree-name> [--force]"
+        echo "Removes the specified git worktree and prunes it from the main repository."
+        return 1
+    fi
+
+    local worktree_name="$1"
+    local force_remove="${2:-}"
+
+    local base_branch_name=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    local repo_dir=$(git rev-parse --show-toplevel 2>/dev/null)
+
+    if [[ -z "$repo_dir" ]]; then
+        echo "Error: Not inside a git repository."
+        return 1
+    fi
+
+    local num_of_worktrees=$(git worktree list | wc -l)
+    if [[ $num_of_worktrees -le 1 ]]; then
+        echo "Error: Cannot remove the last remaining worktree."
+        return 1
+    fi
+
+    local top_worktree=$(git worktree list --porcelain | grep '^worktree ' | head -n1 | awk '{print $2}')
+    local git_common_dir=$(git rev-parse --git-common-dir 2>/dev/null)
+    if [[ "$git_common_dir" != ".git" ]]; then
+        repo_dir="${git_common_dir%/.git}"
+    fi
+
+    local worktrees_dir="${repo_dir}/../worktrees/$(basename "$repo_dir")"
+    if [[ ! -d "${worktrees_dir}/${worktree_name}" ]]; then
+        echo "Error: Worktree '${worktree_name}' does not exist."
+        return 1
+    fi
+
+    local worktree_path="${worktrees_dir}/${worktree_name}"
+    git worktree remove "${worktree_path}" $force_remove
+    if [[ $? -ne 0 ]]; then
+        echo "Error: Failed to remove worktree '${worktree_name}'."
+        return 1
+    fi
+    git worktree prune
+    echo "Removed worktree '${worktree_name}' and pruned from repository."
+
+    cd "$top_worktree"
+    echo "Current directory changed to top-level worktree: $top_worktree"
+    git worktree list
+
+    local autorun_dir=${worktree_path/worktrees\//worktrees\/autorun\/}
+    if [[ -d "$autorun_dir" ]]; then
+        echo -n "Should we remove autorun directory: $autorun_dir? (y/n) [n] "
+        read -r answer
+        if [[ "$answer" != "y" ]]; then
+            echo "Skipping removal of autorun directory."
+            return 0
+        fi
+        rm -rf "$autorun_dir"
+        echo "Removed autorun directory: $autorun_dir"
+    fi
+}

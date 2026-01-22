@@ -15,13 +15,13 @@ _hosts_update() {
     'fabric:Update Fabric related hosts'
     'fabric_versions:Update Fabric version hosts'
     'linux:Update Linux specific hosts'
+    'npm:Update npm packages on hosts'
     'win:Update Windows specific hosts'
     'zshrc:Update zshrc configuration'
   )
 
   _arguments -C \
-    '1:subcommand:->subcmds' \
-    '*::args:->args' && return 0
+    '*:subcommand:->subcmds' && return 0
 
   case $state in
     subcmds)

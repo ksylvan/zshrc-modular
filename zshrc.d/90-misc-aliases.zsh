@@ -45,6 +45,7 @@ function hosts_update() {
     local linux_hosts=("${_ZHU_LINUX_HOSTS[@]}")
     local zshrc_hosts=("${_ZHU_ZSHRC_HOSTS[@]}")
     local fabric_hosts=("${_ZHU_FABRIC_HOSTS[@]}")
+    local npm_hosts=("${_ZHU_NPM_HOSTS[@]}")
 
     if _running_in_wsl; then
         fabric_hosts+="localhost"
@@ -58,7 +59,7 @@ function hosts_update() {
         _commands=()
         for arg in "$@"; do
             if [[ "$arg" == "all" ]]; then
-                _commands+=("fabric" "win" "brew" "appstore" "linux" "zshrc")
+                _commands+=("fabric" "win" "brew" "appstore" "linux" "zshrc" "npm")
             else
                 _commands+=("$arg")
             fi
@@ -142,6 +143,19 @@ function hosts_update() {
                 echo ""
             done
             unset _linux_host
+            ;;
+        npm)
+            for _npm_host in $npm_hosts; do
+                _npm_host=$(_validated_hostname $_npm_host)
+                if [[ -z "$_npm_host" ]]; then
+                    continue
+                fi
+                echo "${COLOR_GREEN}Updating npm packages on $_npm_host${COLOR_RESET}"
+                ssh $_npm_host "source .zprofile && npm install -g npm && pnpm update -g --latest"
+                echo "Done"
+                echo ""
+            done
+            unset _npm_host
             ;;
         win)
             for _win_host in $win_hosts; do

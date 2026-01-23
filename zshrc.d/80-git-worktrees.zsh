@@ -2,6 +2,42 @@
 
 _verbose_loading=${ZSHRC_VERBOSE:-0}
 
+
+function gh_repo_sync() {
+    if git_fork_here 2>&1 >/dev/null; then
+        echo "Syncing forked repository..."
+        local repo=$(git remote -v | grep origin | sed -e "s/.*://" | sed "s/\.git .*//" | uniq)
+        gh repo sync "$repo"
+    else
+        echo "Not a forked repository. Skipping sync."
+        return 0
+    fi
+}
+
+function git_fork_here() {
+    if [[ ! -e .git ]]; then
+        echo "ERROR: Not a git repository: $PWD"
+        return 1
+    fi
+
+    local repo
+    repo=$(git remote -v | grep origin | sed -e "s/.*://" | sed "s/\.git .*//" | uniq)
+
+    if ! command -v gh &> /dev/null; then
+        echo "ERROR: gh CLI is not installed"
+        return 1
+    fi
+
+    gh repo view "$repo" --json isFork --jq '.isFork' | grep -q true
+    if [[ $? -ne 0 ]]; then
+        echo false
+        return 1
+    else
+        echo true
+        return 0
+    fi
+}
+
 make_worktree_here() {
     if [[ $# -ne 1  ]]; then
         echo "Usage: make_worktree_here <worktree-name>"

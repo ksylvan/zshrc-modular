@@ -5,9 +5,13 @@ _verbose_loading=${ZSHRC_VERBOSE:-0}
 # Load zprofile if somehow not already loaded
 if [[ -z "${__zprofile_loaded}" ]]; then
   [[ $_verbose_loading -eq 1 ]] && echo "Loading zprofile from zshrc"
-  if ! source "${HOME}/.zprofile"; then
-    echo "Error: Failed to source ~/.zprofile" >&2
-  fi
+  for _zprofile_file in "/etc/zprofile" "${HOME}/.zprofile"; do
+    if [[ -r "${_zprofile_file}" ]]; then
+      [[ $_verbose_loading -eq 1 ]] && echo "Sourcing ${_zprofile_file}"
+      source "${_zprofile_file}" ||
+        echo "Error: Failed to source ${_zprofile_file}" >&2
+    fi
+  done
 fi
 
 # Load all configuration snippets from ~/.zshrc.d
@@ -38,4 +42,4 @@ if [[ -r "${HOME}/.iterm2_shell_integration.zsh" ]]; then
 fi
 
 # Clean up temporary variables
-unset _lmstudio_bin _verbose_loading _zshrc_dir _zshrc_file
+unset _lmstudio_bin _verbose_loading _zshrc_dir _zshrc_file _zprofile_file

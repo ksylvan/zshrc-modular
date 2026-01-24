@@ -17,6 +17,7 @@
         "nullglob",
         "plandex",
         "pwsh",
+        "shellenv",
         "tailscaled",
         "thefuck",
         "toplevel",

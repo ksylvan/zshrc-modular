@@ -2,6 +2,14 @@
 
 _verbose_loading=${ZSHRC_VERBOSE:-0}
 
+# Load zprofile if somehow not already loaded
+if [[ -z "${__zprofile_loaded}" ]]; then
+  [[ $_verbose_loading -eq 1 ]] && echo "Loading zprofile from zshrc"
+  if ! source "${HOME}/.zprofile"; then
+    echo "Error: Failed to source ~/.zprofile" >&2
+  fi
+fi
+
 # Load all configuration snippets from ~/.zshrc.d
 _zshrc_dir="${HOME}/.zshrc.d"
 if [[ -d "${_zshrc_dir}" ]]; then

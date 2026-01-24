@@ -22,3 +22,6 @@ fi
 
 # Clean up script-local variables
 unset _brew_found _brew_path _verbose_loading
+
+__zprofile_loaded=1
+

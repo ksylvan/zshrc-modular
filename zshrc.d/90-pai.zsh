@@ -9,6 +9,8 @@ if whence -p claude &>/dev/null; then
         [[ ${_verbose_loading} -eq 1 ]] && echo "Claude exists but no .claude/ directory found. No PAI for you!"
     else
         alias pai='bun run "$HOME"/.claude/skills/CORE/Tools/PAI.ts'
+        export PAI_DIR="${HOME}/.claude"
+        [[ ${_verbose_loading} -eq 1 ]] && echo "Claude CLI found. PAI alias set and PAI_DIR exported."
     fi
 else
     [[ ${_verbose_loading} -eq 1 ]] && echo "Claude CLI is not installed."

@@ -15,7 +15,7 @@ _hosts_update() {
     'fabric:Update Fabric related hosts'
     'fabric_versions:Update Fabric version hosts'
     'linux:Update Linux specific hosts'
-    'npm:Update npm packages on hosts'
+    'npm:Update npm/pnpm/bun packages on hosts'
     'win:Update Windows specific hosts'
     'zshrc:Update zshrc configuration'
   )

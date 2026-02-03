@@ -150,7 +150,7 @@ function hosts_update() {
                 if [[ -z "$_npm_host" ]]; then
                     continue
                 fi
-                echo "${COLOR_GREEN}Updating npm packages on $_npm_host${COLOR_RESET}"
+                echo "${COLOR_GREEN}Updating npm, pnpm, and bun packages on $_npm_host${COLOR_RESET}"
                 ssh $_npm_host "source .zprofile && npm install -g npm && pnpm update -g --latest && bun update -g"
                 echo "Done"
                 echo ""

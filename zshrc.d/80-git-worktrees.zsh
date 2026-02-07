@@ -176,3 +176,7 @@ cleanup_work_tree_here() {
         echo "Removed autorun directory: $autorun_dir"
     fi
 }
+
+gh_pr_view() {
+    gh pr view --json number,title --template '{{printf "#%v: %s\n" .number .title }}'
+}

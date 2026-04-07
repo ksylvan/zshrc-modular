@@ -47,6 +47,20 @@ function hosts_update() {
     local fabric_hosts=("${_ZHU_FABRIC_HOSTS[@]}")
     local npm_hosts=("${_ZHU_NPM_HOSTS[@]}")
 
+    # Filter out any hosts listed in _ZHU_IGNORE_HOSTS
+    if [[ -n "${_ZHU_IGNORE_HOSTS+x}" ]]; then
+        local _ignore_host
+        for _ignore_host in "${_ZHU_IGNORE_HOSTS[@]}"; do
+            win_hosts=("${win_hosts[@]:#$_ignore_host}")
+            mac_brew_hosts=("${mac_brew_hosts[@]:#$_ignore_host}")
+            mac_appstore_hosts=("${mac_appstore_hosts[@]:#$_ignore_host}")
+            linux_hosts=("${linux_hosts[@]:#$_ignore_host}")
+            zshrc_hosts=("${zshrc_hosts[@]:#$_ignore_host}")
+            fabric_hosts=("${fabric_hosts[@]:#$_ignore_host}")
+            npm_hosts=("${npm_hosts[@]:#$_ignore_host}")
+        done
+    fi
+
     if _running_in_wsl; then
         fabric_hosts+="localhost"
         linux_hosts+="localhost"

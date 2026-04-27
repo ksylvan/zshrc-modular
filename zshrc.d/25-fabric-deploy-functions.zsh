@@ -127,6 +127,7 @@ function _fabric_purge_binaries() {
 function _fabric_git_pull() {
     if [ $# -ne 1 ]; then
         echo "Usage: _fabric_git_pull hostname"
+        echo "Does a git pull on the fabric repository on the host and returns the new version"
         return
     fi
 
@@ -134,9 +135,13 @@ function _fabric_git_pull() {
     local is_win="$(_is_windows_host $host)"
 
     if [ "$is_win" = "true" ]; then
-        ssh "$host" 'cd src\\fabric && git checkout main && git pull'
+        ssh "$host" "(cd src\\fabric && git checkout main && \
+            git pull && type .\\nix\\pkgs\\fabric\\version.nix)" 2>&1 |
+            tail -n 1 | tr -d '\"'
     else
-        ssh "$host" 'cd src/fabric && git checkout main && git pull'
+        ssh "$host" "(cd src/fabric && git checkout main &&\
+            git pull && cat ./nix/pkgs/fabric/version.nix)" 2>&1 |
+            tail -n 1 | tr -d '\"'
     fi
 }
 
@@ -240,11 +245,9 @@ function fabric_deploy() {
     local host="$1"
     echo "${COLOR_GREEN}Installing latest fabric on $host${COLOR_RESET}"
     local ver_before="$(_fabric_version $host)"
-    _fabric_git_pull $host
-    _fabric_recompile $host
-    local ver_after="$(_fabric_version $host)"
+    local ver_new="v$(_fabric_git_pull $host)"
 
-    if [[ "$ver_before" = "$ver_after" ]]; then
+    if [[ "$ver_before" = "$ver_new" ]]; then
         echo "No update needed. Fabric version: $ver_before"
         if [[ -z "${FABRIC_SETUP_PATTERNS_EVEN_IF_SAME}" ]]; then
             echo "Skipping fabric setup on $host"
@@ -252,8 +255,9 @@ function fabric_deploy() {
             return
         fi
     else
+        _fabric_recompile $host
         _fabric_helpers_recompile $host
-        echo "Updated from ${ver_before} to ${ver_after}"
+        echo "Updated from ${ver_before} to ${ver_new}"
     fi
 
     _fabric_purge_patterns_and_strategies $host

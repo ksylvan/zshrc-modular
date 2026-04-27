@@ -15,6 +15,7 @@
         "lmstudio",
         "mxcl",
         "nullglob",
+        "pkgs",
         "plandex",
         "pwsh",
         "shellenv",

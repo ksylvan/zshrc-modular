@@ -2,9 +2,9 @@
 
 # fabric update and deploy to all my machines
 function fabric_update() {
-    gh repo sync ksylvan/fabric
     local _pwd=$(pwd)
     cd ~/src/fabric
+    gh repo sync
     # Check if the current directory is a git repository and if it's dirty
     local _git_cmd_output=""
     if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then

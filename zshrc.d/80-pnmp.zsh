@@ -11,7 +11,7 @@ if whence -p pnpm &>/dev/null; then
     else
         export PNPM_HOME=$HOME/.local/share/pnpm
     fi
-    [[ " ${path[@]} " != *" $PNPM_HOME "* ]] && path=($PNPM_HOME $path)
+    [[ " ${path[@]} " != *" $PNPM_HOME/bin "* ]] && path=($PNPM_HOME/bin $path)
     if [[ ${_verbose_loading} -eq 1 ]]; then
         echo "Updated PNPM_HOME: $PNPM_HOME"
         echo "Updated PATH: $PATH"

@@ -14,6 +14,7 @@ _hosts_update() {
     'brew:Update Homebrew related hosts'
     'fabric:Update Fabric related hosts'
     'fabric_versions:Update Fabric version hosts'
+    'hermes:Update Hermes agent and restart gateway'
     'linux:Update Linux specific hosts'
     'npm:Update npm/pnpm/bun packages on hosts'
     'win:Update Windows specific hosts'

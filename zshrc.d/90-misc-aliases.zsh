@@ -25,7 +25,7 @@ fabric -p ai'
 
 function hosts_update() {
     usage_message="Usage: hosts_update <cmd> [<cmd> <cmd> ...]"
-    usage_message+="\n  cmd: appstore, brew, fabric, fabric_versions, linux, win, zshrc"
+    usage_message+="\n  cmd: appstore, brew, fabric, fabric_versions, hermes, linux, win, zshrc"
     usage_message+="\n  or use the all pseudo-command (to run all commands)"
     if [[ $# -eq 0 ]]; then
         echo -e $usage_message
@@ -45,6 +45,7 @@ function hosts_update() {
     local linux_hosts=("${_ZHU_LINUX_HOSTS[@]}")
     local zshrc_hosts=("${_ZHU_ZSHRC_HOSTS[@]}")
     local fabric_hosts=("${_ZHU_FABRIC_HOSTS[@]}")
+    local hermes_hosts=("${_ZHU_HERMES_HOSTS[@]}")
     local npm_hosts=("${_ZHU_NPM_HOSTS[@]}")
 
     # Filter out any hosts listed in _ZHU_IGNORE_HOSTS
@@ -57,6 +58,7 @@ function hosts_update() {
             linux_hosts=("${linux_hosts[@]:#$_ignore_host}")
             zshrc_hosts=("${zshrc_hosts[@]:#$_ignore_host}")
             fabric_hosts=("${fabric_hosts[@]:#$_ignore_host}")
+            hermes_hosts=("${hermes_hosts[@]:#$_ignore_host}")
             npm_hosts=("${npm_hosts[@]:#$_ignore_host}")
         done
     fi
@@ -73,7 +75,7 @@ function hosts_update() {
         _commands=()
         for arg in "$@"; do
             if [[ "$arg" == "all" ]]; then
-                _commands+=("fabric" "win" "brew" "appstore" "linux" "zshrc" "npm")
+                _commands+=("fabric" "win" "brew" "appstore" "linux" "zshrc" "npm" "hermes")
             else
                 _commands+=("$arg")
             fi
@@ -134,6 +136,19 @@ function hosts_update() {
                 done
             fi
             unset _fabric_host
+            ;;
+        hermes)
+            for _hermes_host in $hermes_hosts; do
+                _hermes_host=$(_validated_hostname $_hermes_host)
+                if [[ -z "$_hermes_host" ]]; then
+                    continue
+                fi
+                echo "${COLOR_GREEN}Updating Hermes on $_hermes_host${COLOR_RESET}"
+                ssh $_hermes_host "source .zprofile && source .zshrc.d/40-local-bin.zsh && hermes update && hermes gateway restart"
+                echo "Done"
+                echo ""
+            done
+            unset _hermes_host
             ;;
         fabric_versions)
             for _fabric_host in $fabric_hosts; do

@@ -161,17 +161,30 @@ function hosts_update() {
             unset _fabric_host
             ;;
         linux)
+            # Detect Arch-family (pacman) vs Debian-family (apt-get) on the remote host.
+            local _linux_update_cmd='if command -v pacman >/dev/null 2>&1; then
+    sudo pacman -Syu --noconfirm
+elif command -v apt-get >/dev/null 2>&1; then
+    sudo apt-get update && sudo apt-get -y upgrade
+    if command -v snap >/dev/null 2>&1; then
+        sudo snap refresh
+    fi
+else
+    echo "Unsupported Linux distro: neither pacman nor apt-get found" >&2
+    exit 1
+fi'
             for _linux_host in $linux_hosts; do
                 _linux_host=$(_validated_hostname $_linux_host)
                 if [[ -z "$_linux_host" ]]; then
                     continue
                 fi
                 echo "${COLOR_GREEN}Updating Linux packages on $_linux_host${COLOR_RESET}"
-                ssh $_linux_host "sudo apt-get update && sudo apt-get -y upgrade && which snap && sudo snap refresh"
+                ssh $_linux_host "$_linux_update_cmd"
                 echo "Done"
                 echo ""
             done
             unset _linux_host
+            unset _linux_update_cmd
             ;;
         npm)
             for _npm_host in $npm_hosts; do

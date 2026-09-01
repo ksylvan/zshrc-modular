@@ -138,6 +138,7 @@ function _macos_version_to_name() {
     13*) echo "Ventura" ;;
     14*) echo "Sonoma" ;;
     15*) echo "Sequoia" ;;
+    26*) echo "Tahoe" ;;
     *) echo "Unknown macOS version" ;;
     esac
 }
@@ -169,8 +170,24 @@ function _linux_os_version() {
         echo "Usage: _linux_os_version hostname"
         return
     fi
+    # Prefer lsb_release, but fall back to /etc/os-release (Arch, and any
+    # other distro that does not ship the lsb_release tool).
+    local probe='if command -v lsb_release >/dev/null 2>&1; then
+    lsb_release -a
+elif [ -r /etc/os-release ]; then
+    . /etc/os-release
+    printf "Distributor ID:\\t%s\\n" "${ID:-unknown}"
+    printf "Description:\\t%s\\n" "${PRETTY_NAME:-${NAME:-unknown}}"
+    printf "Release:\\t%s\\n" "${VERSION_ID:-${BUILD_ID:-rolling}}"
+    printf "Codename:\\t%s\\n" "${VERSION_CODENAME:-n/a}"
+    if [ -n "${ID_LIKE:-}" ]; then
+        printf "Based on:\\t%s\\n" "$ID_LIKE"
+    fi
+else
+    uname -sr
+fi'
     if [[ $(_is_linux_host $1) = "true" ]]; then
-        local os=$(ssh ${1} "lsb_release -a" 2>&1)
+        local os=$(ssh ${1} "$probe" 2>&1)
         if [[ -n "$os" ]]; then
             echo "$os"
         else
@@ -209,6 +226,7 @@ function os_version() {
         return
     fi
 
+    local host="$1"
     local os=$(remote_host_os $host)
     if [[ $os =~ "Linux" ]]; then
         _linux_os_version $host

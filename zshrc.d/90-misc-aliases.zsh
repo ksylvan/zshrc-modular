@@ -161,8 +161,10 @@ function hosts_update() {
             unset _fabric_host
             ;;
         linux)
-            # Detect Arch-family (pacman) vs Debian-family (apt-get) on the remote host.
-            local _linux_update_cmd='if command -v pacman >/dev/null 2>&1; then
+            # Omarchy first (omarchy update), then Arch pacman, then Debian apt-get.
+            local _linux_update_cmd='if command -v omarchy >/dev/null 2>&1; then
+    sudo env OMARCHY_ALLOW_DIRECT_PACMAN=1 pacman -Syu --noconfirm
+elif command -v pacman >/dev/null 2>&1; then
     sudo pacman -Syu --noconfirm
 elif command -v apt-get >/dev/null 2>&1; then
     sudo apt-get update && sudo apt-get -y upgrade
@@ -170,7 +172,7 @@ elif command -v apt-get >/dev/null 2>&1; then
         sudo snap refresh
     fi
 else
-    echo "Unsupported Linux distro: neither pacman nor apt-get found" >&2
+    echo "Unsupported Linux distro: neither omarchy, pacman, nor apt-get found" >&2
     exit 1
 fi'
             for _linux_host in $linux_hosts; do

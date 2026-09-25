@@ -163,7 +163,7 @@ function hosts_update() {
         linux)
             # Omarchy first (omarchy update), then Arch pacman, then Debian apt-get.
             local _linux_update_cmd='if command -v omarchy >/dev/null 2>&1; then
-    sudo env OMARCHY_ALLOW_DIRECT_PACMAN=1 pacman -Syu --noconfirm
+    sudo env OMARCHY_ALLOW_DIRECT_PACMAN=1 pacman -Syu --noconfirm && mise upgrade
 elif command -v pacman >/dev/null 2>&1; then
     sudo pacman -Syu --noconfirm
 elif command -v apt-get >/dev/null 2>&1; then

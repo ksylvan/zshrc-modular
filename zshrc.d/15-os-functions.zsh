@@ -139,6 +139,7 @@ function _macos_version_to_name() {
     14*) echo "Sonoma" ;;
     15*) echo "Sequoia" ;;
     26*) echo "Tahoe" ;;
+    27*) echo "Golden Gate" ;;
     *) echo "Unknown macOS version" ;;
     esac
 }
